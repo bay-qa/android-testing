@@ -1,0 +1,53 @@
+package io.mattcarroll.androidtesting.signup;
+
+
+import android.content.res.Resources;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.action.ViewActions;
+import android.support.test.rule.ActivityTestRule;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import io.mattcarroll.androidtesting.R;
+
+import static android.support.test.espresso.Espresso.closeSoftKeyboard;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+
+/**
+ * Created by abzalbek on 8/29/17.
+ */
+
+public class EspressoSignUpTest {
+
+    @Rule
+
+    public final ActivityTestRule<SignUpActivity> activityRule =
+            new ActivityTestRule<>(SignUpActivity.class, false, true);
+
+    private Resources resources;
+
+    @Before
+
+    public  void setup(){
+
+        resources = InstrumentationRegistry.getTargetContext().getResources();
+    }
+    @Test
+
+    public void usersSignUpPersonalInfoVerifyRequiredFieldsAreRequired(){
+
+        onView(withId(R.id.button_next))
+            .perform(ViewActions.closeSoftKeyboard())
+            .perform(click());
+
+        onView(withId(R.id.edittext_first_name))
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
+    }
+}

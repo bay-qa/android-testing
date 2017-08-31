@@ -28,6 +28,11 @@ android {
         }
     }
 }
+android {
+    lintOptions {
+        abortOnError false
+    }
+}
 
 // Force same version as in the app
 configurations.all {
