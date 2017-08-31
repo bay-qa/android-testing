@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.Before;
 
@@ -45,8 +46,6 @@ public class EspressoSignUpTest {
         onView(withId(R.id.edittext_last_name))
                 .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
         onView(withId(R.id.edittext_address_line_1))
-                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
-        onView(withId(R.id.edittext_address_line_2))
                 .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
         onView(withId(R.id.edittext_address_city))
                 .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
