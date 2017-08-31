@@ -5,7 +5,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -30,7 +29,6 @@ public class EspressoSignUpTest {
 
     private Resources resources;
 
-    @Before
     public void setup() {
         resources = InstrumentationRegistry.getTargetContext().getResources();
     }

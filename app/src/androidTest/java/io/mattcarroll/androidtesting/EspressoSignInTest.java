@@ -1,8 +1,9 @@
 package io.mattcarroll.androidtesting;
 
+import android.content.res.Resources;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 
-import io.mattcarroll.androidtesting.login.LoginActivity;
 import io.mattcarroll.androidtesting.signup.SignUpActivity;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -21,6 +22,12 @@ public class EspressoSignInTest {
     @Rule
     public final ActivityTestRule<SignUpActivity> activityRule = new ActivityTestRule<>(SignUpActivity.class, false, true);
 
+    private Resources resources;
+
+    @Before
+    public void setup(){
+        resources = InstrumentationRegistry.getTargetContext().getResources();
+    }
 
     @Test
     public void userSignUpPersonalInfoVerifyRequiredFieldsAreRequired(){
@@ -35,15 +42,11 @@ public class EspressoSignInTest {
                 .check(matches(hasErrorText("Required.")));
         onView(withId(R.id.edittext_address_line_2))
                 .check(matches(hasErrorText("Required.")));
-        onView(withId(R.id.edittext_account_number))
-                .check(matches(hasErrorText("Required.")));
         onView(withId(R.id.edittext_address_city))
                 .check(matches(hasErrorText("Required.")));
         onView(withId(R.id.edittext_address_state))
                 .check(matches(hasErrorText("Required.")));
         onView(withId(R.id.edittext_address_zip))
-                .check(matches(hasErrorText("Required.")));
-        onView(withId(R.id.edittext_bank_name))
                 .check(matches(hasErrorText("Required.")));
     }
 }
