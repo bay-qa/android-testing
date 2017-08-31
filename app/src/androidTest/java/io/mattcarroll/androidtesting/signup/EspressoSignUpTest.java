@@ -4,9 +4,8 @@ import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 
-
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
 
 import io.mattcarroll.androidtesting.R;
 
@@ -29,6 +28,7 @@ public class EspressoSignUpTest {
 
     private Resources resources;
 
+    @Before
     public void setup() {
         resources = InstrumentationRegistry.getTargetContext().getResources();
     }
@@ -46,8 +46,13 @@ public class EspressoSignUpTest {
                 .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
         onView(withId(R.id.edittext_address_line_1))
                 .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
-
+        onView(withId(R.id.edittext_address_line_2))
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
+        onView(withId(R.id.edittext_address_city))
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
+        onView(withId(R.id.edittext_address_state))
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
+        onView(withId(R.id.edittext_address_zip))
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
     }
-
-
 }
