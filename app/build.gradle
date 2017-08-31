@@ -12,7 +12,11 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
     testBuildType 'espresso'
 
     buildTypes {
@@ -45,7 +49,7 @@ dependencies {
 
     compile('de.greenrobot:eventbus:2.0.1', {
         exclude group: 'junit', module: 'junit'
-        exclude group: 'com.google.android', module: 'android'
+        exclude group: 'com.google.android', module: 'support-v4'
     })
 
     compile 'com.android.support:support-v4:25.3.0'
