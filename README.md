@@ -58,6 +58,16 @@ checking for type of an object, so we can use matchesSafely(TypeWeInterestedIn) 
 * use inAdapterView to make Espresso check one specific AdapterView
 * use onChildView to work with specific child of the matched item view
 
+===== Day 3
+## 1. Verifying fired intent
+Espresso Intents is important to isolate tests per-activity. It allows to both verify that
+ expected intents was fired when leaving activity and verify AUT response to receiving an intent
+Documentation - https://developer.android.com/training/testing/espresso/intents.html
+Advanced usage not covered here - https://github.com/googlesamples/android-testing/blob/master/ui/espresso/IntentsAdvancedSample/app/src/androidTest/java/com/example/android/testing/espresso/intents/AdvancedSample/ImageViewerActivityTest.java
+* Replace ActivityTestRule with IntentsTestRule to enable Espresso Intents
+* Use `intended` to verify fired intent
+* Espress Intents has its own set of matchers to use against intents
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.
