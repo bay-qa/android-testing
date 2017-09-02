@@ -67,6 +67,32 @@ public class EspressoLoginIntentsTest {
                 .check(matches(isDisplayed()));
     }
 
+    @Test
+    public void loginActivityShouldShowFailureDialogWhenSignUpFails() {
+        intending(hasComponent(SignUpActivity.class.getName()))
+                .respondWith(SIGN_UP_FAILED);
+
+        clickSignUp();
+
+        // Verify the failure dialog is shown
+        onView(withText(R.string.dialog_title_signup_failed))
+                .check(matches(isDisplayed()));
+        onView(withText(R.string.dialog_message_signup_failed))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void loginActivityShouldShowLoginScreenWhenSignUpCancelled() {
+        intending(hasComponent(SignUpActivity.class.getName()))
+                .respondWith(CANCELLED);
+
+        clickSignUp();
+
+        // Verify the login screen is now visible
+        onView(withId(R.id.email_login_form))
+                .check(matches(isDisplayed()));
+    }
+
     private void clickSignUp() {
         onView(withId(R.id.button_sign_up))
                 .perform(scrollTo(), click());
