@@ -9,14 +9,19 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import io.mattcarroll.androidtesting.R;
+import io.mattcarroll.androidtesting.signup.SignUpActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.Intents.intending;
 import static android.support.test.espresso.intent.matcher.ComponentNameMatchers.hasShortClassName;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 public class EspressoLoginIntentsTest {
     // Results that will be used in tests
@@ -46,6 +51,20 @@ public class EspressoLoginIntentsTest {
                 // and this form is more readable
                 hasComponent(hasShortClassName(".signup.SignUpActivity"))
         );
+    }
+
+    @Test
+    public void loginActivityShouldShowSuccessDialogWhenSignUpSucceeds() {
+        intending(hasComponent(SignUpActivity.class.getName()))
+                .respondWith(SUCCESS);
+
+        clickSignUp();
+
+        // Verify the success dialog is shown
+        onView(withText(R.string.dialog_title_signup_successful))
+                .check(matches(isDisplayed()));
+        onView(withText(R.string.dialog_message_signup_successful))
+                .check(matches(isDisplayed()));
     }
 
     private void clickSignUp() {

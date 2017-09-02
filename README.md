@@ -60,13 +60,17 @@ checking for type of an object, so we can use matchesSafely(TypeWeInterestedIn) 
 
 ===== Day 3
 ## 1. Verifying fired intent
-Espresso Intents is important to isolate tests per-activity. It allows to both verify that
+Espresso Intents is important to isolate tests per activity. It allows to both verify that
  expected intents was fired when leaving activity and verify AUT response to receiving an intent
 Documentation - https://developer.android.com/training/testing/espresso/intents.html
 Advanced usage not covered here - https://github.com/googlesamples/android-testing/blob/master/ui/espresso/IntentsAdvancedSample/app/src/androidTest/java/com/example/android/testing/espresso/intents/AdvancedSample/ImageViewerActivityTest.java
 * Replace ActivityTestRule with IntentsTestRule to enable Espresso Intents
 * Use `intended` to verify fired intent
 * Espress Intents has its own set of matchers to use against intents
+
+## 2. Simulating receiving an intent
+Use `intending` to stub response from other activities (launched with `startActivityForResult`)
+ or to test AUT response to receiving an intent from another app
 
 # Android Testing
 
