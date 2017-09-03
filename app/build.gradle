@@ -9,7 +9,12 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+//        lintOptions {
+//            abortOnError false
+//        }
+
     }
 
     testBuildType 'espresso'
@@ -19,6 +24,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
         // We use a special build type for Espresso tests so that we can replace animated resources
         // with non-animated variations during the tests.
         espresso {
@@ -62,7 +68,6 @@ dependencies {
     // AndroidJUnitRunner and JUnit Rules
     androidTestCompile 'com.android.support.test:runner:1.0.0'
     androidTestCompile 'com.android.support.test:rules:1.0.0'
-
     // Espresso dependencies
     androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.0'
     androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.0'
