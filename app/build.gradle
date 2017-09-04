@@ -22,13 +22,13 @@ android {
         }
 
         // We use a special build type for Espresso tests so that we can replace animated resources
-                // with non-animated variations during the tests.
+               // with non-animated variations during the tests.
                         espresso {
                                 initWith(buildTypes.debug)
-                            }
+                           }
             }
     }
-+
+
         // Force same version as in the app
                 configurations.all {
                         resolutionStrategy {
@@ -61,12 +61,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:2.7.22"
 
-
-        // AndroidJUnitRunner and JUnit Rules
-                androidTestCompile 'com.android.support.test:runner:1.0.0'
+// AndroidJUnitRunner and JUnit Rules
+        androidTestCompile 'com.android.support.test:runner:1.0.0'
         androidTestCompile 'com.android.support.test:rules:1.0.0'
 
-                // Espresso dependencies
+    // Espresso dependencies
                         androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.0'
         androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.0'
         androidTestCompile 'com.android.support.test.espresso:espresso-intents:3.0.0'
@@ -77,5 +76,11 @@ dependencies {
                         // or "androidTestCompile", depending on the app's implementation
                                 // androidTestCompile for now, might change later
                                         androidTestCompile 'com.android.support.test.espresso:espresso-idling-resource:3.0.0'
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
 }
 
