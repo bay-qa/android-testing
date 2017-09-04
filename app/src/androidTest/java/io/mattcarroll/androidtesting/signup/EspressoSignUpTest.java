@@ -4,7 +4,8 @@ package io.mattcarroll.androidtesting.signup;
 import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoActivityResumedException;
-import android.support.test.espresso.action.EspressoKey;
+import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.ViewAssertion;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -26,11 +27,15 @@ import static android.support.test.espresso.action.ViewActions.pressKey;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static android.support.test.espresso.matcher.RootMatchers.isSystemAlertWindow;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static android.support.test.espresso.matcher.ViewMatchers.isSelected;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.core.Is.is;
 
@@ -137,6 +142,12 @@ public class EspressoSignUpTest {
                 typeText(password));
     }
 
+    private void isUnChecked(String text){
+            onView(withText(text))
+                    .perform(scrollTo())
+                    .check(matches(isNotChecked()));
+    }
+
     @Test
     public void userSignUpPersonalInfoVerifyRequiredFieldsAreRequired() {
         // Verify required fields show errors and non-required fields do not.
@@ -198,11 +209,31 @@ public class EspressoSignUpTest {
     }
 
     private void fillInValidPersonalInfo() {
-        scrollToAndFill(R.id.edittext_first_name, "Matt");
-        scrollToAndFill(R.id.edittext_last_name, "Carroll");
-        scrollToAndFill(R.id.edittext_address_line_1, "123 Fake Street");
-        scrollToAndFill(R.id.edittext_address_city, "Palo Alto");
+        scrollToAndFill(R.id.edittext_first_name, "max");
+        scrollToAndFill(R.id.edittext_last_name, "Vomilk");
+        scrollToAndFill(R.id.edittext_address_line_1, "321 Fake Street");
+        scrollToAndFill(R.id.edittext_address_city, "Sunnyvale");
         scrollToAndFill(R.id.edittext_address_state, "CA");
-        scrollToAndFill(R.id.edittext_address_zip, "94024");
+        scrollToAndFill(R.id.edittext_address_zip, "90003");
+    }
+
+    @Test
+    public void navigationAndSignUpTest() throws InterruptedException {
+        fillInValidPersonalInfo();
+        scrollToAndTapNext();
+        selectInterest("Astronomy");
+        tapNext();
+        pressBackOnActivity();
+        isUnChecked("Astronomy");
+        selectInterest("Astronomy");
+        tapNext();
+        enterCredentials("test@gmail.com", "password");
+        tapNext();
+        onView(withId(R.id.alertTitle))
+                .inRoot(isPlatformPopup())
+                .check(matches(isDisplayed()));
+
+//           isSystemAlertWindow();
     }
 }
+
