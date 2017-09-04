@@ -1,6 +1,7 @@
 package io.mattcarroll.androidtesting.signup;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.mattcarroll.androidtesting.Bus;
 import io.mattcarroll.androidtesting.R;
@@ -20,6 +23,22 @@ import io.mattcarroll.androidtesting.R;
  * Collect info on user's interests.
  */
 public class CollectInterestsFragment extends Fragment {
+
+    private static String[] interestsToAdd = new String[] {
+            "Snowboarding",
+            "Chess",
+            "Programming",
+            "Graphic Design",
+            "Football",
+            "Basketball",
+            "Soccer",
+            "Espresso Testing",
+            "Alcohol",
+            "Coffee",
+            "Long walks on the beach",
+            "Astronomy"
+    };
+    private int lastAddedItem = 0;
 
     @NonNull
     public static CollectInterestsFragment newInstance() {
@@ -62,6 +81,26 @@ public class CollectInterestsFragment extends Fragment {
 
         // Update ActionBar title for this screen.
         getActivity().setTitle("Sign Up - Interests");
+
+        final Timer timer = new Timer();
+        final Handler uiHandler = new Handler();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                int i = adapter.getCount();
+                if (i < interestsToAdd.length) {
+                    final String interestToAdd = interestsToAdd[i];
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.addInterest(interestToAdd);
+                        }
+                    });
+                } else if (i == interestsToAdd.length) {
+                    timer.cancel();
+                }
+            };
+        }, 0L, 1000);
     }
 
     private void onNextSelected() {

@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,32 +17,15 @@ import java.util.Set;
  */
 class InterestsListsAdapter extends BaseAdapter {
 
-    private final String[] interests = new String[] {
-            "Snowboarding",
-            "Chess",
-            "Programming",
-            "Graphic Design",
-            "Football",
-            "Basketball",
-            "Soccer",
-            "Espresso Testing",
-            "Alcohol",
-            "Coffee",
-            "Long walks on the beach",
-            "Astronomy"
-    };
-    private final boolean[] isChecked;
-
-    InterestsListsAdapter() {
-        isChecked = new boolean[interests.length];
-    }
+    private final ArrayList<String> interests = new ArrayList<String>();
+    private final ArrayList<Boolean> isChecked = new ArrayList<Boolean>();
 
     public boolean isChecked(int position) {
-        return isChecked[position];
+        return isChecked.get(position);
     }
 
     public void setChecked(int position, boolean isChecked) {
-        this.isChecked[position] = isChecked;
+        this.isChecked.set(position, isChecked);
         notifyDataSetChanged();
     }
 
@@ -49,23 +33,29 @@ class InterestsListsAdapter extends BaseAdapter {
     public Set<String> getCheckedItems() {
         Set<String> checkedItems = new HashSet<>();
 
-        for (int i = 0; i < interests.length; ++i) {
-            if (this.isChecked[i]) {
-                checkedItems.add(interests[i]);
+        for (int i = 0; i < interests.size(); ++i) {
+            if (this.isChecked.get(i)) {
+                checkedItems.add(interests.get(i));
             }
         }
 
         return checkedItems;
     }
 
+    public void addInterest(String interest) {
+        this.interests.add(interest);
+        this.isChecked.add(false);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
-        return interests.length;
+        return interests.size();
     }
 
     @Override
     public String getItem(int position) {
-        return interests[position];
+        return interests.get(position);
     }
 
     @Override

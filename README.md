@@ -74,6 +74,13 @@ Use `intending` to stub response from other activities (launched with `startActi
 
 ## 3. Sign Up tests implemented with Page Object pattern
 
+
+===== Day 4
+## 1. Add background routine that changes list we use in tests
+This will break our tests in EspressoSingUpTest.
+WARNING: This `Timer` implementation is only for IdlingResource demonstration. It is probably a bad
+style to implement it this way.
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.
