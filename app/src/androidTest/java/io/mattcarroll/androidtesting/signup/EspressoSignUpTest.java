@@ -218,7 +218,7 @@ public class EspressoSignUpTest {
     }
 
     @Test
-    public void navigationAndSignUpTest() throws InterruptedException {
+    public void navigationAndSignUpTest() {
         fillInValidPersonalInfo();
         scrollToAndTapNext();
         selectInterest("Astronomy");
