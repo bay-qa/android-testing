@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import io.mattcarroll.androidtesting.R;
+import io.mattcarroll.androidtesting.androidtesting.SignUpActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
