@@ -1,28 +1,33 @@
 package io.mattcarroll.androidtesting.signup;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import java.util.Set;
-
 import io.mattcarroll.androidtesting.Bus;
+import io.mattcarroll.androidtesting.ListensForBackgroundWork;
 import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.usersession.UserSession;
 
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity implements ListensForBackgroundWork {
     public static final int RESULT_FAILED = 1001;
 
     private static final String TAG = "SignUpActivity";
     private static final String KEY_SIGN_UP_FORM = "sign_up_form";
 
     private SignUpForm signUpForm;
+
+    // The Idling Resource which will be null in production.
+    @Nullable private CountingIdlingResource idlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,5 +157,37 @@ public class SignUpActivity extends AppCompatActivity {
         Log.d(TAG, "Finishing SignUpActivity with successful sign-up.");
         setResult(RESULT_OK);
         finish();
+    }
+
+    /**
+     * Only called from test, creates and returns a new {@link IdlingResource}.
+     *
+     * Synchronized to make sure idlingResource has consistent value across different threads
+     */
+    @VisibleForTesting
+    @NonNull
+    synchronized IdlingResource getIdlingResource() {
+        if (idlingResource == null) {
+            idlingResource = new CountingIdlingResource(
+                    "SignUpActivity@" + System.identityHashCode(this), // each instance of IdlingResource should have unique name
+                    true);  // will output counter changes to logcat as I/CountingIdlingResource lines
+        }
+        return idlingResource;
+    }
+
+    // Synchronized to make sure idlingResource has consistent value across different threads
+    @Override
+    public synchronized void onStartWork() {
+        if (idlingResource != null) {
+            idlingResource.increment();
+        }
+    }
+
+    // Synchronized to make sure idlingResource has consistent value across different threads
+    @Override
+    public synchronized void onFinishWork() {
+        if (idlingResource != null) {
+            idlingResource.decrement();
+        }
     }
 }

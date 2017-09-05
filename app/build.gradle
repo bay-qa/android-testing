@@ -75,5 +75,5 @@ dependencies {
     // The following Espresso dependency can be either "compile"
     // or "androidTestCompile", depending on the app's implementation
     // androidTestCompile for now, might change later
-    androidTestCompile 'com.android.support.test.espresso:espresso-idling-resource:3.0.0'
+    compile 'com.android.support.test.espresso:espresso-idling-resource:3.0.0'
 }

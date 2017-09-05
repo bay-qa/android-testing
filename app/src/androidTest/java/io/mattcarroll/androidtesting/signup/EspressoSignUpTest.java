@@ -3,8 +3,9 @@ package io.mattcarroll.androidtesting.signup;
 
 import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.IdlingRegistry;
+import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.NoActivityResumedException;
-import android.support.test.espresso.action.EspressoKey;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -22,7 +23,6 @@ import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.pressKey;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -30,7 +30,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.core.Is.is;
 
@@ -41,17 +40,24 @@ public class EspressoSignUpTest {
             new ActivityTestRule<>(SignUpActivity.class, false, true);
 
     private Resources resources;
+    private IdlingResource idlingResource;
 
     @Before
     public void setup() {
         // getTargetContext() operates on the application under test
         // getContext() operates on the test APK context
         resources = InstrumentationRegistry.getTargetContext().getResources();
+
+        idlingResource = activityRule.getActivity().getIdlingResource();
+        IdlingRegistry.getInstance().register(idlingResource);
     }
 
     @After
     public void teardown() {
         UserSession.getInstance().logout();
+
+        IdlingRegistry.getInstance().unregister(idlingResource);
+        idlingResource = null;
     }
 
     private static void scrollToAndTapNext() {

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import io.mattcarroll.androidtesting.Bus;
+import io.mattcarroll.androidtesting.ListensForBackgroundWork;
 import io.mattcarroll.androidtesting.R;
 
 /**
@@ -82,6 +84,16 @@ public class CollectInterestsFragment extends Fragment {
         // Update ActionBar title for this screen.
         getActivity().setTitle("Sign Up - Interests");
 
+        // Notify activity that background work started/finished
+        FragmentActivity activity = getActivity();
+        final ListensForBackgroundWork workListener;
+        if (activity instanceof ListensForBackgroundWork) {
+            workListener = (ListensForBackgroundWork)activity;
+            workListener.onStartWork();
+        } else {
+            workListener = null;
+        }
+
         final Timer timer = new Timer();
         final Handler uiHandler = new Handler();
         timer.schedule(new TimerTask() {
@@ -98,6 +110,9 @@ public class CollectInterestsFragment extends Fragment {
                     });
                 } else if (i == interestsToAdd.length) {
                     timer.cancel();
+                    if (workListener != null) {
+                        workListener.onFinishWork();
+                    }
                 }
             };
         }, 0L, 1000);

@@ -81,6 +81,61 @@ This will break our tests in EspressoSingUpTest.
 WARNING: This `Timer` implementation is only for IdlingResource demonstration. It is probably a bad
 style to implement it this way.
 
+## 2. Wait for routine using CountingIdleResource
+Espresso waits for UI events in the current message queue to be handled, animations to complete
+ (although animations can still fail you actions e.g. click(), so they still should be disabled in
+ Developer settings of your Android device), and for default instances of AsyncTask to complete
+ before it executes next test operation.
+ In other cases like communication with your backend server Espresso needs your help to detect that
+ background work is in progress and that it should wait for that work to complete.
+ You do that by adding CountingIdlingResource (for simple cases) or implementing IdlingResource
+  into the app (when CountingIdlingResource implementation does not suits you).
+
+ In either case you should register instance of IdlingResource in Espresso registry using
+ `IdlingRegistry.getInstance().register(idlingResource)` before background operation is started
+ (probably during test setUp method)
+ and unregister using `IdlingRegistry.getInstance().unregister(idlingResource)` when there is no
+ longer background operation expected (probably during test tearDown method)
+
+We will start with CountingIdlingResource. It is simple IdlingResource that wraps a thread-safe counter.
+This resource is considered idle when counter is 0. And it is considered that some background
+work is in progress when counter is greater than zero. The counter has value of 0 by default (idle).
+CountingIdlingResource will throw IllegalStateException when the counter reaches a negative value.
+
+NOTE: Espresso identifies IdlingResources by their names (returned by `getName()``). So make sure
+they have unique names.
+WARNING: Current Espresso version have a problem: `IdlingRegistry.getInstance().unregister`
+ is not exactly unregister passed resource: when you "unregister" some resource and then add another
+ resource with the same name, the former (unregistered) resource will still be used while the latter
+ (registered) will be ignored.
+Obvious workaround is to make all instances of some idling resource have unique names.
+
+See https://developer.android.com/training/testing/espresso/idling-resource.html
+    https://developer.android.com/reference/android/support/test/espresso/idling/CountingIdlingResource.html
+
+* We will need IdlingResource in the AUT code, so change `espresso-idling-resource` dependency to
+ compile
+* Background work is started in CollectInterestsFragment which is displayed by SignUpActivity.
+This fragment is not displayed when the activity is started. Also probably in the real application
+it would not be the only fragment doing background work.
+Thus we need some way to notify the activity that some background operation is in progress.
+Let's make the activity to implement ListensForBackgroundWork interface with two methods:
+ `onStartWork` and `onFinishWork`. Fragments should call these methods to notify the activity of
+ background work.
+* IdlingResource should not be created in production environment. It will be initialized only
+ by calling getIdlingResource method from instrumented tests.
+ This method has default (package only) access and @VisibleForTesting to indicate that it should be
+ called from tests only.
+* getIdlingResource method creates IdlingResource with unique name (see warning above)
+* When doing background work fragments will check if the activity implement ListensForBackgroundWork
+ and call `onStartWork` and `onFinishWork` methods
+* The activity will increment IdlingResource counter in `onStartWork` and decrement it in `onFinishWork`
+Note that there should be exactly one call of `onFinishWork` for each `onStartWork`
+* @Before (set up) method in EspressoSignUpTest registers the idling resource in the activity to make
+ Espresso wait for it
+* @After (tear down) method in EspressoSignUpTest unregisters the idling resource once test case
+ finished running (see also warning above)
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.
