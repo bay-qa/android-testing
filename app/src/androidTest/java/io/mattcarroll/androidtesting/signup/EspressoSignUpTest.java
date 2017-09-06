@@ -80,12 +80,33 @@ public class EspressoSignUpTest {
         );
     }
 
+    //scroll list
+    private static void scrollToForInterest(String itemName) {
+        onData(allOf(is(instanceOf(String.class)), is(itemName)))
+                .perform(scrollTo());
+    }
+
+    //check checkbox
+    private static void interestIsNotSelected(String itemName) {
+        onView(withText(itemName))
+                .check(matches(isNotChecked()));
+
+    }
+    //put checkbox
+    private static void selectInterest(String itemName){
+        onView(withText(itemName))
+                .perform(click());
+    }
+
+
     private static void tapNext(){
         onView(withId(R.id.button_next)).perform(
                 click()
         );
     }
 
+
+    // lesson3_class
     @Test
     public void userSignUpVerifyBackWorksOnEachPage(){
         scrollToAndFill(R.id.edittext_first_name, "Oxana");
@@ -125,7 +146,7 @@ public class EspressoSignUpTest {
 
 
     }
-
+    //homework lesson3
     @Test
     public void userSignUpPersonalInfoVerifyPopupAboutVerificationEmail(){
 
@@ -140,11 +161,8 @@ public class EspressoSignUpTest {
         scrollToAndTapNext();
 
         //select interest
-        onData(allOf(is(instanceOf(String.class)),is("Astronomy")))
-                .perform(scrollTo());
-        onView(withText("Astronomy"))
-                .perform(scrollTo())
-                .perform(click());
+        scrollToForInterest("Astronomy");
+        selectInterest("Astronomy");
 
         //tap next button
         tapNext();
@@ -152,13 +170,11 @@ public class EspressoSignUpTest {
         //press back button
         pressBackOnActivity();
 
-        //verify that Astronomy is not checked and check again
-        onData(allOf(is(instanceOf(String.class)),is("Astronomy")))
-                .perform(scrollTo());
-        onView(withText("Astronomy"))
-                .check(matches(isNotChecked()));
-        onView(withText("Astronomy"))
-                .perform(click());
+        //verify that Astronomy is not selected and select again
+        scrollToForInterest("Astronomy");
+        interestIsNotSelected("Astronomy");
+        selectInterest("Astronomy");
+
 
         //tap next button
         tapNext();
