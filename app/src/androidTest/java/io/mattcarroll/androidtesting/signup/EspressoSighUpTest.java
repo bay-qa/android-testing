@@ -18,7 +18,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static io.mattcarroll.androidtesting.R.id.edittext_address_city;
 import static io.mattcarroll.androidtesting.R.id.edittext_address_line_1;
-import static io.mattcarroll.androidtesting.R.id.edittext_address_line_2;
 import static io.mattcarroll.androidtesting.R.id.edittext_address_state;
 import static io.mattcarroll.androidtesting.R.id.edittext_address_zip;
 import static io.mattcarroll.androidtesting.R.id.edittext_first_name;
@@ -31,43 +30,39 @@ import static io.mattcarroll.androidtesting.R.id.edittext_last_name;
 public class EspressoSighUpTest {
 
      @Rule
-    public final ActivityTestRule<SignUpActivity> activityRule =
-             new ActivityTestRule<SignUpActivity>(SignUpActivity.class, false, true);
+    public final ActivityTestRule<SignUpActivity> activityRule = new ActivityTestRule<SignUpActivity>(SignUpActivity.class, false, true);
 
     private Resources resources;
 
     @Before
     public void setup(){
-        resources= InstrumentationRegistry.getTargetContext().getResources();
+        resources = InstrumentationRegistry.getTargetContext().getResources();
     }
 
     @Test
 
-    public void userSingUpPersonalInfoVerifyRequiredFildsAreResquired() {
+    public void userSignUpPersonalInfoVerifyRequiredFieldsAreRequired() {
 
         onView(withId(R.id.button_next))
                 .perform(scrollTo())
                 .perform(click());
         onView(withId(edittext_first_name))
-                .check(matches(hasErrorText("Required.")));
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
 
         onView(withId(edittext_last_name))
-                .check(matches(hasErrorText("Required.")));
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
 
         onView(withId(edittext_address_line_1))
-                .check(matches(hasErrorText("Required.")));
-
-        onView(withId(edittext_address_line_2))
-                .check(matches(hasErrorText("Required.")));
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
 
         onView(withId(edittext_address_city))
-                .check(matches(hasErrorText("Required.")));
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
 
         onView(withId(edittext_address_state))
-                .check(matches(hasErrorText("Required.")));
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
 
         onView(withId(edittext_address_zip))
-                .check(matches(hasErrorText("Required.")));
+                .check(matches(hasErrorText(resources.getString(R.string.input_error_required))));
 
 
 
