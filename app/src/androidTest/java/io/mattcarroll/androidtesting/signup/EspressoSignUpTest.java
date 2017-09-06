@@ -14,6 +14,7 @@ import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.androidtesting.SignUpActivity;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -21,12 +22,19 @@ import static android.support.test.espresso.action.ViewActions.pressKey;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.isDialog;
+import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Created by oxana on 8/31/2017.
@@ -114,6 +122,55 @@ public class EspressoSignUpTest {
             activityFinished = true;
         }
         assertTrue(activityFinished);
+
+
+    }
+
+    @Test
+    public void userSignUpPersonalInfoVerifyPopupAboutVerificationEmail(){
+
+        scrollToAndFill(R.id.edittext_first_name, "Oxana");
+        scrollToAndFill(R.id.edittext_last_name, "Ermolenko");
+        scrollToAndFill(R.id.edittext_address_line_1, "address");
+        scrollToAndFill(R.id.edittext_address_city, "Mountain view");
+        scrollToAndFill(R.id.edittext_address_state, "CA");
+        scrollToAndFill(R.id.edittext_address_zip, "94043");
+
+        //tap next button
+        scrollToAndTapNext();
+
+        //select interest
+        onData(allOf(is(instanceOf(String.class)),is("Astronomy")))
+                .perform(scrollTo());
+        onView(withText("Astronomy"))
+                .perform(scrollTo())
+                .perform(click());
+
+        //tap next button
+        tapNext();
+
+        //press back button
+        pressBackOnActivity();
+
+        //verify that Astronomy is not checked and check again
+        onData(allOf(is(instanceOf(String.class)),is("Astronomy")))
+                .perform(scrollTo());
+        onView(withText("Astronomy"))
+                .check(matches(isNotChecked()));
+        onView(withText("Astronomy"))
+                .perform(click());
+
+        //tap next button
+        tapNext();
+
+        //provide email password
+        scrollToAndFill(R.id.autocompletetextview_email, "bayqa@yahoo.com");
+        scrollToAndFill(R.id.edittext_password, "password");
+
+        //tap next button
+        tapNext();
+
+
 
 
     }
