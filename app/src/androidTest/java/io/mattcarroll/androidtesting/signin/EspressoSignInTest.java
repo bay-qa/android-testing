@@ -38,13 +38,13 @@ public class EspressoSignInTest {
 
     @Test
     public void signInUserWithValidLoginAndPassword(){
-        onView(ViewMatchers.withId(R.id.edittext_email))
+        onView(withId(R.id.edittext_email))
                 .perform(scrollTo(),clearText(),typeText("email@gmail.com"));
-        onView(ViewMatchers.withId(R.id.edittext_password))
+        onView(withId(R.id.edittext_password))
                 .perform(scrollTo(),clearText(),typeText("password123"));
-        onView(ViewMatchers.withId(R.id.button_sign_in))
-                .perform(click());
-        onView(ViewMatchers.withId(R.id.textview_no_accounts))
+        onView(withId(R.id.button_sign_in))
+                .perform(scrollTo(),click());
+        onView(withId(R.id.textview_no_accounts))
                 .check(matches(isDisplayed()));
     }
 }
