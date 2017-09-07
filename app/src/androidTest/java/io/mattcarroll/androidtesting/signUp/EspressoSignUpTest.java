@@ -2,7 +2,6 @@ package io.mattcarroll.androidtesting.signUp;
 
 import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.action.EspressoKey;
 import android.support.test.rule.ActivityTestRule;
 
@@ -23,14 +22,13 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.view.KeyEvent.KEYCODE_MINUS;
-import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.CoreMatchers.instanceOf;
 
 /**
  * Created by igorkalenichenko on 8/30/17.
@@ -116,23 +114,15 @@ public class EspressoSignUpTest {
 
         //first press of back button
         pressBackOnActivity();
-        onView(withText("Basketball"))
-                .check(matches(isDisplayed()));
 
-        //second press of back button
-        pressBackOnActivity();
-        onView(withId(R.id.edittext_first_name))
-                .check(matches(isDisplayed()));
+        onView(withText("Astronomy"))
+                .check(matches(isNotChecked()));
+        selectAstronomy("Astronomy");
+        tapNext();
 
-        boolean activityFinished = false;
-        try {
-            pressBackOnActivity();
-
-        } catch (NoActivityResumedException e) {
-            activityFinished = true;
-        }
-        assertTrue(activityFinished);
-
+        scrollToAndFill(R.id.autocompletetextview_email, "automationforewer@gmail.com");
+        scrollToAndFill(R.id.edittext_password, "Test123!");
+        tapNext();
     }
 
     @Test
