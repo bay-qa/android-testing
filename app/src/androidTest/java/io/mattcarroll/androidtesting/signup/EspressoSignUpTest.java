@@ -5,14 +5,19 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.action.CloseKeyboardAction;
 import android.support.test.rule.ActivityTestRule;
+import android.widget.CheckedTextView;
+import android.widget.ListView;
 
+import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.Before;
 
 import io.mattcarroll.androidtesting.R;
 
+import static android.R.attr.id;
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
@@ -20,13 +25,22 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.CursorMatchers.withRowString;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static io.mattcarroll.androidtesting.R.id.alertTitle;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.core.StringStartsWith.startsWith;
 
 /**
  * Created by borisgurtovyy on 8/28/17.
@@ -44,7 +58,6 @@ public class EspressoSignUpTest {
     public void setup() {
         resources = InstrumentationRegistry.getTargetContext().getResources();
     }
-
 
     private static void scrollToAndTapNext(){
         onView(withId(R.id.button_next)).perform(scrollTo(),click());
@@ -64,9 +77,23 @@ public class EspressoSignUpTest {
                 .perform(scrollTo(), typeText(textToType));
     }
 
+    private static void scrollToAndTapOnCheckBoxAstronomy(){
+        //onData(allOf(is(instanceOf(InterestsListsAdapter.class)), is("Astronomy"))).perform(click());
+        //onData(withItemContent("Astronomy")).perform(click());
+        //onData(is(instanceOf(String.class)), startsWith("Astronomy")));
+        //onRow("Astronomy").withId()
+
+//        onData(hasToString(startsWith("Astronomy")))
+//                .inAdapterView(withId(R.id.listview_interests))
+//                .perform(click());
+
+        //onData(withRowString("Astronomy")).perform(click());
+
+
+    }
 
     @Test
-    public void userSignUpVerifyBackWorksOnEachPage(){
+    public void homeWork3(){
         scrollToAndFill(R.id.edittext_first_name, "Sergio");
         scrollToAndFill(R.id.edittext_last_name, "Odin");
         scrollToAndFill(R.id.edittext_address_line_1, "1600 Amphitheatre Pkw");
@@ -76,37 +103,21 @@ public class EspressoSignUpTest {
 
         scrollToAndTapNext();
 
-        onView(withText("Astronomy"))
-                .perform(scrollTo(),click());
+        scrollToAndTapOnCheckBoxAstronomy();
 
         tapNext();
 
         pressBackOnActivity();
-        onView(withText("Astronomy"))
-                .perform(scrollTo())
-                .check(matches(isNotChecked()));
 
-        onView(withText("Astronomy"))
-                .perform(scrollTo(),click());
+        scrollToAndTapOnCheckBoxAstronomy();
 
         onView(withId(R.id.autocompletetextview_email))
                 .perform(scrollTo(),clearText(),typeText("myMail@email.com"));
         onView(withId(R.id.edittext_password))
                 .perform(scrollTo(),clearText(),typeText("myPassCode"));
 
-        tapNext();
-
         onView(withId(R.id.alertTitle))
                 .check(matches(isDisplayed()));
-
-//        boolean activityFinished = false;
-//        try {
-//            pressBackOnActivity();
-//        } catch (NoActivityResumedException e){
-//            activityFinished = true;
-//        }
-//
-//        assertTrue(activityFinished);
     }
 
     @Test
