@@ -72,6 +72,8 @@ Advanced usage not covered here - https://github.com/googlesamples/android-testi
 Use `intending` to stub response from other activities (launched with `startActivityForResult`)
  or to test AUT response to receiving an intent from another app
 
+## 3. Sign Up tests implemented with Page Object pattern
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.
