@@ -14,6 +14,7 @@ import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.signup.SignUpActivity;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -27,7 +28,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
-
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.CoreMatchers.instanceOf;
 
 /**
  * Created by igorkalenichenko on 8/30/17.
@@ -50,6 +53,18 @@ public class EspressoSignUpTest {
         onView(withId(R.id.button_next)).perform(
                 scrollTo(),
                 click()
+        );
+    }
+
+    private void selectAstronomy(String itemName) {
+        onView(withText(itemName)).perform(
+                click()
+        );
+    }
+
+    private static void scrollToAstronomy(String itemName) {
+        onData(allOf(is(instanceOf(String.class)), is(itemName))).perform(
+                scrollTo()
         );
     }
 
@@ -93,8 +108,8 @@ public class EspressoSignUpTest {
         scrollToAndTapNext();
 
         //select interest
-        onView(withText("Chess"))
-                .perform(click());
+        scrollToAstronomy("Astronomy");
+        selectAstronomy("Astronomy");
 
         //tap next button
         tapNext();
