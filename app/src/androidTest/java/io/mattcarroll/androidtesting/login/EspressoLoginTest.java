@@ -38,7 +38,7 @@ public class EspressoLoginTest {
         onView(withId(R.id.edittext_email))
                 .perform(typeText("borisbayqa@gmail.com"));
         onView(withId(R.id.edittext_password))
-                .perform(typeText("password1235"));
+                .perform(typeText("password1535"));
         onView(withId(R.id.button_sign_in))
                 .perform(scrollTo())
                 .perform(click());
