@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.action.CloseKeyboardAction;
+import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
@@ -26,6 +27,7 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.CursorMatchers.withRowString;
+import static android.support.test.espresso.matcher.RootMatchers.isDialog;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -40,6 +42,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 
 /**
@@ -47,6 +50,8 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
  */
 
 public class EspressoSignUpTest {
+
+    CountingIdlingResource idlingResource = new CountingIdlingResource("DATA_LOADER");
 
     @Rule
     public final ActivityTestRule<SignUpActivity> activityRule =
@@ -77,23 +82,15 @@ public class EspressoSignUpTest {
                 .perform(scrollTo(), typeText(textToType));
     }
 
-    private static void scrollToAndTapOnCheckBoxAstronomy(){
-        //onData(allOf(is(instanceOf(InterestsListsAdapter.class)), is("Astronomy"))).perform(click());
-        //onData(withItemContent("Astronomy")).perform(click());
-        //onData(is(instanceOf(String.class)), startsWith("Astronomy")));
-        //onRow("Astronomy").withId()
-
-//        onData(hasToString(startsWith("Astronomy")))
-//                .inAdapterView(withId(R.id.listview_interests))
-//                .perform(click());
-
-        //onData(withRowString("Astronomy")).perform(click());
-
+    private static void scrollToAndTapOnAstronomy(){
+        onData(hasToString(is("Astronomy")))
+                .inAdapterView(withId(R.id.listview_interests))
+                .perform(click());
 
     }
 
     @Test
-    public void homeWork3(){
+    public void verifySingUPCheckBoxBackButtonAndSignIn(){
         scrollToAndFill(R.id.edittext_first_name, "Sergio");
         scrollToAndFill(R.id.edittext_last_name, "Odin");
         scrollToAndFill(R.id.edittext_address_line_1, "1600 Amphitheatre Pkw");
@@ -103,21 +100,39 @@ public class EspressoSignUpTest {
 
         scrollToAndTapNext();
 
-        scrollToAndTapOnCheckBoxAstronomy();
+        scrollToAndTapOnAstronomy();
 
         tapNext();
 
         pressBackOnActivity();
 
-        scrollToAndTapOnCheckBoxAstronomy();
+        onData(hasToString(is("Astronomy")))
+                .inAdapterView(withId(R.id.listview_interests))
+                .check(matches(isNotChecked()));
+
+        scrollToAndTapOnAstronomy();
+
+        tapNext();
 
         onView(withId(R.id.autocompletetextview_email))
                 .perform(scrollTo(),clearText(),typeText("myMail@email.com"));
         onView(withId(R.id.edittext_password))
                 .perform(scrollTo(),clearText(),typeText("myPassCode"));
 
-        onView(withId(R.id.alertTitle))
+        tapNext();
+
+        onView(withText("Signing Up..."))
                 .check(matches(isDisplayed()));
+
+        idlingResource.increment();
+         onView(withId(R.id.alertTitle))
+                .check(matches(isDisplayed()));
+
+//        onView(withText("OK"))
+//                .inRoot(isDialog())
+//                .check(matches(isDisplayed()));
+
+        idlingResource.decrement();
     }
 
     @Test
