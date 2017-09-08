@@ -7,12 +7,17 @@ import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.action.EspressoKey;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Properties;
+import java.util.Random;
+
+import io.mattcarroll.androidtesting.BaseTest;
 import io.mattcarroll.androidtesting.R;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
@@ -39,7 +44,7 @@ import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
-public class EspressoSignUpTest {
+public class EspressoSignUpTest extends BaseTest {
     @Rule
     public final ActivityTestRule<SignUpActivity> activityRule =
             new ActivityTestRule<>(SignUpActivity.class, false, true);
@@ -173,6 +178,7 @@ public class EspressoSignUpTest {
 
     @Test
     public void userChecksAstronomy() {
+
         // filling
         scrollToAndFill(R.id.edittext_first_name, "Boris");
         scrollToAndFill(R.id.edittext_last_name, "Gurtovoy");
@@ -208,14 +214,28 @@ public class EspressoSignUpTest {
         tapNext();
 
         //fill email
-        scrollToAndFill(R.id.autocompletetextview_email, "borisbayqa@gmail.com");
+        scrollToAndFill(R.id.autocompletetextview_email, getProperties().getProperty("email"));
 
         //fill pass
-        scrollToAndFill(R.id.edittext_password, "pass12345");
+        String password = generateRandomPassword(10);
+        Log.d("info", password);
+        scrollToAndFill(R.id.edittext_password, getProperties().getProperty("password"));
 
         //click sign up button
         tapNext();
 
+    }
+
+    String generateRandomPassword(int length){
+        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder res = new StringBuilder();
+        Random rand = new Random();
+        while(length>0) {
+            int index = rand.nextInt(base.length());
+            res.append(base.charAt(index));
+            length--;
+        }
+        return res.toString();
     }
 
 }
