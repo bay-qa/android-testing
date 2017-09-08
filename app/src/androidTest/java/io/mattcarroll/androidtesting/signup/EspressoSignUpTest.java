@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import io.mattcarroll.androidtesting.R;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -24,11 +25,18 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 public class EspressoSignUpTest {
@@ -133,6 +141,81 @@ public class EspressoSignUpTest {
     private void checkFieldHasError(int fieldId, int errorId){
         onView(withId(fieldId))
                 .check(matches(hasErrorText(resources.getString(errorId))));
+    }
+
+
+    /*HOMEWORK*/
+
+
+
+    private void verifyViewIsChecked(String viewName) {
+        onView(withText(viewName))
+                .check(matches(isChecked()));
+    }
+
+
+    private void verifyViewIsNotChecked(String viewName) {
+        onView(withText(viewName))
+                .check(matches(isNotChecked()));
+    }
+
+
+    private static void clickViewOnTheListView(String viewName) {
+        onData(hasToString(viewName))
+                .perform(click());
+    }
+
+    private static void scrollToViewOnTheListView(String viewName) {
+        onData(hasToString(viewName))
+                .perform(scrollTo());
+    }
+
+
+    @Test
+    public void userChecksAstronomy() {
+        // filling
+        scrollToAndFill(R.id.edittext_first_name, "Boris");
+        scrollToAndFill(R.id.edittext_last_name, "Gurtovoy");
+        scrollToAndFill(R.id.edittext_address_line_1, "Some adress");
+        scrollToAndFill(R.id.edittext_address_city, "Los Angeles");
+        scrollToAndFill(R.id.edittext_address_state, "CA");
+        scrollToAndFill(R.id.edittext_address_zip, "90007");
+
+        // scroll and press next
+        scrollToAndTapNext();
+
+        //click Astronomy
+        clickViewOnTheListView("Astronomy");
+
+        // check it is checked
+        verifyViewIsChecked("Astronomy");
+
+        // click next button without scrolling
+        tapNext();
+
+        // pressing back button
+        pressBackOnActivity();
+
+        scrollToViewOnTheListView("Astronomy");
+
+        // check it is NOT checked
+        verifyViewIsNotChecked("Astronomy");
+
+        //click Astronomy
+        clickViewOnTheListView("Astronomy");
+
+        // click next button without scrolling
+        tapNext();
+
+        //fill email
+        scrollToAndFill(R.id.autocompletetextview_email, "borisbayqa@gmail.com");
+
+        //fill pass
+        scrollToAndFill(R.id.edittext_password, "pass12345");
+
+        //click sign up button
+        tapNext();
+
     }
 
 }
