@@ -27,8 +27,10 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
+import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -37,6 +39,7 @@ import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
@@ -120,16 +123,30 @@ public class EspressoSignUpTest {
     }
 
     //checking item with text(is not checked)
-    private void checkItemWithTextIsChecked(String itemName) {
+    private void checkItemWithTextIsNotChecked(String itemName) {
         onView(withText(itemName))
                 .check(matches(isNotChecked()));
     }
+
+
+    //checking item with text(is  checked)
+    private void checkItemWithTextIsChecked(String itemName) {
+        onView(withText(itemName))
+                .check(matches(isChecked()));
+    }
+
+
 
     // scrolling list view , finding element with text (need to ask!!!)
     private static void scrollingListView(String itemName) {
         onData(allOf(is(instanceOf(String.class)), is(itemName))).perform(
                 scrollTo()
         );
+    }
+        // methods that scroll and click view on listView,(tutor)
+    private static void clickViewOnTheListView(String viewName){
+        onData(hasToString(viewName))
+                .perform(click());
     }
 
     //checking popup with text
@@ -213,10 +230,20 @@ public class EspressoSignUpTest {
         // scrolling and tap next button
         scrollToAndTapNext();
 
+
+        /*
         //scrolling and clicking checkbox
         scrollingListView("Astronomy");
         selectItemWithText("Astronomy");
         //onView(withText("Astronomy"))
+        */
+
+
+        // clicking onView on listView by tutor !!!!!!!!!!!!! no need to scroll to a view
+        clickViewOnTheListView("Astronomy");
+
+        // checking view isChecked
+        checkItemWithTextIsChecked("Astronomy");
 
         // click next button without scrolling
         tapNext();
@@ -226,7 +253,7 @@ public class EspressoSignUpTest {
 
         // checkin checkbox
         scrollingListView("Astronomy");
-        checkItemWithTextIsChecked("Astronomy");
+        checkItemWithTextIsNotChecked("Astronomy");
 
         //clicking checkbox
         selectItemWithText("Astronomy");
@@ -247,6 +274,11 @@ public class EspressoSignUpTest {
 //       onView(withText("Signup successful!"))             that part doesnt work with my emulator . couldn find solution
 //               .inRoot(withDecorView(not(is(activityRule.getActivity().getWindow().getDecorView()))))
 //               .check(matches(isDisplayed()));
+
+        
+//        onView(withId(R.id.alertTitle))
+//                .inRoot(isPlatformPopup())
+//                .check(matches(isDisplayed()));
 
     }
 
