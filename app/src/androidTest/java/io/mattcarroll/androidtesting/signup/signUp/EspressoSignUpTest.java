@@ -1,4 +1,4 @@
-package io.mattcarroll.androidtesting.signup;
+package io.mattcarroll.androidtesting.signup.signUp;
 
 
 import android.content.res.Resources;
@@ -7,6 +7,7 @@ import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.action.EspressoKey;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -14,8 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Map;
+import java.util.Random;
 
 import io.mattcarroll.androidtesting.R;
+import io.mattcarroll.androidtesting.signup.BaseTest;
+import io.mattcarroll.androidtesting.signup.SignUpActivity;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onData;
@@ -47,7 +51,7 @@ import static org.hamcrest.Matchers.not;
  * Created by abzalbek on 8/29/17.
  */
 @RunWith(AndroidJUnit4.class)
-public class EspressoSignUpTest {
+public class EspressoSignUpTest extends BaseTest {
 
     @Rule
     public final ActivityTestRule<SignUpActivity> activityRule =
@@ -136,15 +140,15 @@ public class EspressoSignUpTest {
     }
 
 
-
     // scrolling list view , finding element with text (need to ask!!!)
     private static void scrollingListView(String itemName) {
         onData(allOf(is(instanceOf(String.class)), is(itemName))).perform(
                 scrollTo()
         );
     }
-        // methods that scroll and click view on listView,(tutor)
-    private static void clickViewOnTheListView(String viewName){
+
+    // methods that scroll and click view on listView,(tutor)
+    private static void clickViewOnTheListView(String viewName) {
         onData(hasToString(viewName))
                 .perform(click());
     }
@@ -219,6 +223,8 @@ public class EspressoSignUpTest {
     /*HOMEWORK*/
     @Test
     public void usersInfoPressNextBackButtonsCheckAndVerifyPopup() {
+
+        Log.d("info", "My name is " + getProperties().getProperty("name"));
         // filling
         scrollToAndFill(R.id.edittext_first_name, "Joe");
         scrollToAndFill(R.id.edittext_last_name, "Taylor");
@@ -262,24 +268,29 @@ public class EspressoSignUpTest {
         tapNext();
 
         // providing email and password
-        scrollToAndFill(R.id.autocompletetextview_email, "bayQA@email.com");
-        scrollToAndFill(R.id.edittext_password, "password2017");
+        scrollToAndFill(R.id.autocompletetextview_email, getProperties().getProperty("email"));
+
+        // generating random password
+        String password = generateRandomPassword(10);
+        Log.d("info", "MY PASSWORD IS ===>" + password);
+        scrollToAndFill(R.id.edittext_password, getProperties().getProperty("password"));
 
         // click next button without scrolling
         tapNext();
 
+    }
 
-        //checking popup
-        //checkPopupWithText("Signup successful!");
-//       onView(withText("Signup successful!"))             that part doesnt work with my emulator . couldn find solution
-//               .inRoot(withDecorView(not(is(activityRule.getActivity().getWindow().getDecorView()))))
-//               .check(matches(isDisplayed()));
-
-        
-//        onView(withId(R.id.alertTitle))
-//                .inRoot(isPlatformPopup())
-//                .check(matches(isDisplayed()));
-
+    //generating random string from giving base !
+    String generateRandomPassword(int length) {
+        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder res = new StringBuilder();
+        Random rand = new Random();
+        while (length > 0) {
+            int index = rand.nextInt(base.length());
+            res.append(base.charAt(index));
+            length--;
+        }
+        return res.toString();
     }
 
 
