@@ -1,4 +1,4 @@
-package io.mattcarroll.androidtesting.signin;
+package io.mattcarroll.androidtesting.login;
 
 import android.support.test.rule.ActivityTestRule;
 

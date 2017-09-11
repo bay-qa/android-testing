@@ -5,14 +5,20 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.action.EspressoKey;
 import android.support.test.rule.ActivityTestRule;
+import android.util.Log;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Properties;
+import java.util.Random;
+
+import io.mattcarroll.androidtesting.BaseTest;
 import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.androidtesting.SignUpActivity;
 
+import static android.R.attr.name;
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -25,6 +31,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
@@ -33,6 +40,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
@@ -40,7 +48,7 @@ import static org.hamcrest.Matchers.is;
  * Created by oxana on 8/31/2017.
  */
 
-public class EspressoSignUpTest {
+public class EspressoSignUpTest extends BaseTest {
     @Rule
     public final ActivityTestRule<SignUpActivity>activityRule =
             new ActivityTestRule<>(SignUpActivity.class, false, true);
@@ -55,6 +63,12 @@ public class EspressoSignUpTest {
     private static void scrollToAndTapNext(){
         onView(withId(R.id.button_next)).perform(
                 scrollTo(),
+                click()
+        );
+    }
+
+    private static void  tapNext(){
+        onView(withId(R.id.button_next)).perform(
                 click()
         );
     }
@@ -80,35 +94,10 @@ public class EspressoSignUpTest {
         );
     }
 
-    //scroll list
-    private static void scrollToForInterest(String itemName) {
-        onData(allOf(is(instanceOf(String.class)), is(itemName)))
-                .perform(scrollTo());
-    }
-
-    //check checkbox
-    private static void interestIsNotSelected(String itemName) {
-        onView(withText(itemName))
-                .check(matches(isNotChecked()));
-
-    }
-    //put checkbox
-    private static void selectInterest(String itemName){
-        onView(withText(itemName))
-                .perform(click());
-    }
-
-
-    private static void tapNext(){
-        onView(withId(R.id.button_next)).perform(
-                click()
-        );
-    }
-
-
-    // lesson3_class
     @Test
     public void userSignUpVerifyBackWorksOnEachPage(){
+
+        //fill in personal info
         scrollToAndFill(R.id.edittext_first_name, "Oxana");
         scrollToAndFill(R.id.edittext_last_name, "Ermolenko");
         scrollToAndFill(R.id.edittext_address_line_1, "address");
@@ -144,51 +133,6 @@ public class EspressoSignUpTest {
         }
         assertTrue(activityFinished);
 
-
-    }
-    //homework lesson3
-    @Test
-    public void userSignUpPersonalInfoVerifyPopupAboutVerificationEmail(){
-
-        scrollToAndFill(R.id.edittext_first_name, "Oxana");
-        scrollToAndFill(R.id.edittext_last_name, "Ermolenko");
-        scrollToAndFill(R.id.edittext_address_line_1, "address");
-        scrollToAndFill(R.id.edittext_address_city, "Mountain view");
-        scrollToAndFill(R.id.edittext_address_state, "CA");
-        scrollToAndFill(R.id.edittext_address_zip, "94043");
-
-        //tap next button
-        scrollToAndTapNext();
-
-        //select interest
-        scrollToForInterest("Astronomy");
-        selectInterest("Astronomy");
-
-        //tap next button
-        tapNext();
-
-        //press back button
-        pressBackOnActivity();
-
-        //verify that Astronomy is not selected and select again
-        scrollToForInterest("Astronomy");
-        interestIsNotSelected("Astronomy");
-        selectInterest("Astronomy");
-
-
-        //tap next button
-        tapNext();
-
-        //provide email password
-        scrollToAndFill(R.id.autocompletetextview_email, "bayqa@yahoo.com");
-        scrollToAndFill(R.id.edittext_password, "password");
-
-        //tap next button
-        tapNext();
-
-
-
-
     }
 
     @Test
@@ -210,4 +154,92 @@ public class EspressoSignUpTest {
                 .check(matches(hasErrorText(resources.getString(errorId))));
 
     }
+
+    //homework lesson3
+
+    private static void verifyViewIsChecked (String viewName){
+        onView(withText(viewName))
+                .check(matches(isChecked()));
+    }
+
+    private static void verifyViewIsNotChecked (String viewName){
+        onView(withText(viewName))
+                .check(matches(isNotChecked()));
+    }
+
+    //scroll list
+    private static void clickViewOnTheListView(String viewName) {
+        onData(hasToString(viewName))
+                .perform(click());
+    }
+
+    private static void scrollToViewOnTheListView(String viewName){
+        onData(hasToString(viewName))
+                .perform(scrollTo());
+    }
+
+    @Test
+    public void userChecksAstronomy(){
+
+
+
+        //filling
+        scrollToAndFill(R.id.edittext_first_name, "Oxana");
+        scrollToAndFill(R.id.edittext_last_name, "Ermolenko");
+        scrollToAndFill(R.id.edittext_address_line_1, "address");
+        scrollToAndFill(R.id.edittext_address_city, "Mountain view");
+        scrollToAndFill(R.id.edittext_address_state, "CA");
+        scrollToAndFill(R.id.edittext_address_zip, "94043");
+
+        //scroll and press next
+        scrollToAndTapNext();
+
+        //click Astronomy
+        clickViewOnTheListView("Astronomy");
+
+        //check it is checked
+        verifyViewIsChecked("Astronomy");
+
+        //tap next button
+        tapNext();
+
+        //press back button
+        pressBackOnActivity();
+
+        //scroll list view
+        scrollToViewOnTheListView("Astronomy");
+
+        //check it is not checked
+        verifyViewIsNotChecked("Astronomy");
+
+        //click Astronomy
+        clickViewOnTheListView("Astronomy");
+
+        //tap next button
+        tapNext();
+
+        //fill email
+        scrollToAndFill(R.id.autocompletetextview_email, getProperties().getProperty("email"));
+
+        //fill password
+        String password = generateRandomPassword(10);
+        Log.d("info", password);
+        scrollToAndFill(R.id.edittext_password, getProperties().getProperty("password"));
+
+        //click sign in button
+        tapNext();
+
+    }
+    String generateRandomPassword(int length){
+        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder res = new StringBuilder();
+        Random rand = new Random();
+        while(length>0) {
+            int index = rand.nextInt(base.length());
+            res.append(base.charAt(index));
+            length--;
+        }
+        return res.toString();
+    }
+
 }
