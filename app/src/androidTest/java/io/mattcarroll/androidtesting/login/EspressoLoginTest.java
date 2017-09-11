@@ -2,6 +2,8 @@ package io.mattcarroll.androidtesting.login;
 
 import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.PerformException;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -10,6 +12,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import io.mattcarroll.androidtesting.BaseTest;
 import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.SplashActivity;
 import io.mattcarroll.androidtesting.signup.SignUpActivity;
@@ -21,13 +24,18 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.core.StringEndsWith.endsWith;
 
 /**
  * Created by borisgurtovyy on 8/30/17.
  */
 @RunWith(AndroidJUnit4.class)
-public class EspressoLoginTest {
+public class EspressoLoginTest extends BaseTest {
 
     @Rule
     public final ActivityTestRule<SplashActivity> activityRule =
@@ -45,4 +53,52 @@ public class EspressoLoginTest {
         onView(withId(R.id.textview_no_accounts))
                 .check(matches(isDisplayed()));
     }
+
+// Homework #4
+
+    private static void scrollToAndFillLoginScreen(int fieldId, String textToTypeIn){
+        onView(withId(fieldId))
+                .perform(scrollTo(), typeText(textToTypeIn));
+    }
+
+    private static void tapOnSignINButton(){
+        onView(withId(R.id.button_sign_in))
+                .perform(scrollTo(), click());
+    }
+
+   // private static void tapOnFloatingActionButton() throws Exception {
+    //    onView(withId(R.id.fab_manage_accounts)).perform(click());
+
+//        onView(allOf(withId(R.id.fab_manage_accounts), isDisplayed()))
+//                .perform(click());
+//
+//    }
+
+ //   private static void tapOnLinkAccountButton(){
+//        onView(withId(R.id.button_link_account))
+//                .perform(scrollTo(), click());
+
+//        onView(allOf(withId(R.id.button_link_account), withText("Link Account"), isDisplayed()))
+//                .perform(click());
+ //   }
+
+    @Test
+
+    public void fillOutAndloginAndAddBankAccount() throws Exception {
+        scrollToAndFillLoginScreen(R.id.edittext_email, getProperties().getProperty("email"));
+        scrollToAndFillLoginScreen(R.id.edittext_password, getProperties().getProperty("password"));
+        tapOnSignINButton();
+//        tapOnFloatingActionButton();
+//        tapOnLinkAccountButton();
+
+        ViewInteraction floatingActionButton = onView(
+                allOf(withId(R.id.fab_manage_accounts), isDisplayed()));
+        floatingActionButton.perform(click());
+
+        ViewInteraction appCompatButton5 = onView(
+                allOf(withId(R.id.button_link_account), withText("Link Account"), isDisplayed()));
+        appCompatButton5.perform(click());
+
+    }
+
 }
