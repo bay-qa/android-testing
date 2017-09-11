@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import io.mattcarroll.androidtesting.BaseTest;
 import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.signup.SignUpActivity;
 
@@ -34,7 +35,7 @@ import static org.hamcrest.Matchers.is;
  * Created by igorkalenichenko on 8/30/17.
  */
 
-public class EspressoSignUpTest {
+public class EspressoSignUpTest extends BaseTest {
 
     @Rule
     public final ActivityTestRule<SignUpActivity> activityRule =
