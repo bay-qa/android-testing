@@ -14,10 +14,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Properties;
 import java.util.Random;
 
 import io.mattcarroll.androidtesting.BaseTest;
+import io.mattcarroll.androidtesting.PageObjects.InterestsPage;
+import io.mattcarroll.androidtesting.PageObjects.PersonalInfoPage;
 import io.mattcarroll.androidtesting.R;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
@@ -37,7 +38,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasToString;
@@ -132,6 +132,8 @@ public class EspressoSignUpTest extends BaseTest {
 
     @Test
     public void userSignUpPersonalInfoVerifyRequiredFieldsAreRequired() {
+
+     /*
         // Verify required fields show errors and non-required fields do not.
         scrollToAndTapNext();
 
@@ -141,16 +143,23 @@ public class EspressoSignUpTest extends BaseTest {
         checkFieldHasError(R.id.edittext_address_city, R.string.input_error_required);
         checkFieldHasError(R.id.edittext_address_state, R.string.input_error_required);
         checkFieldHasError(R.id.edittext_address_zip, R.string.input_error_required);
+
+        */
+
+     PersonalInfoPage personalInfoPage = new PersonalInfoPage()
+             .firstName(getProperties().getProperty("name"))
+             .lastname(getProperties().getProperty("last_name"))
+             .address1(getProperties().getProperty("address1"))
+             .city(getProperties().getProperty("city"))
+             .state(getProperties().getProperty("state"))
+             .zipcode(getProperties().getProperty("zip"));
+        InterestsPage interestsPage = personalInfoPage.tapOnNextButton();
     }
 
     private void checkFieldHasError(int fieldId, int errorId){
         onView(withId(fieldId))
                 .check(matches(hasErrorText(resources.getString(errorId))));
     }
-
-
-    /*HOMEWORK*/
-
 
 
     private void verifyViewIsChecked(String viewName) {
