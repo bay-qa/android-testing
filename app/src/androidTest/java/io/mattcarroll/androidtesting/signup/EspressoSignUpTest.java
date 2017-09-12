@@ -1,24 +1,35 @@
 package io.mattcarroll.androidtesting.signup;
 
+
 import android.content.res.Resources;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.action.EspressoKey;
 import android.support.test.rule.ActivityTestRule;
+
+import android.support.test.runner.AndroidJUnit4;
+
 import android.util.Log;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+
+
 import java.util.Properties;
 import java.util.Random;
 
 import io.mattcarroll.androidtesting.BaseTest;
 import io.mattcarroll.androidtesting.R;
+
 import io.mattcarroll.androidtesting.androidtesting.SignUpActivity;
 
 import static android.R.attr.name;
+
+
+
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -28,17 +39,23 @@ import static android.support.test.espresso.action.ViewActions.pressKey;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
+
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
+
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+
+
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
+
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasToString;
 import static org.hamcrest.Matchers.instanceOf;
@@ -51,32 +68,52 @@ import static org.hamcrest.Matchers.is;
 public class EspressoSignUpTest extends BaseTest {
     @Rule
     public final ActivityTestRule<SignUpActivity>activityRule =
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.Matchers.is;
+
+@RunWith(AndroidJUnit4.class)
+public class EspressoSignUpTest extends BaseTest {
+    @Rule
+    public final ActivityTestRule<SignUpActivity> activityRule =
+
             new ActivityTestRule<>(SignUpActivity.class, false, true);
 
     private Resources resources;
 
     @Before
+
     public void  setup() {
         resources = InstrumentationRegistry.getTargetContext().getResources();
     }
 
     private static void scrollToAndTapNext(){
+
+    private static void scrollToAndTapNext() {
+
         onView(withId(R.id.button_next)).perform(
                 scrollTo(),
                 click()
         );
     }
 
-    private static void  tapNext(){
+
+    private static void tapNext() {
+
         onView(withId(R.id.button_next)).perform(
                 click()
         );
     }
 
-    private static void pressBackOnActivity(){
-        //hide keyboard
+
+    private static void pressBackOnActivity() {
+        // hide keyboard
         closeSoftKeyboard();
-        //press back button
+        // press back button
+
         pressBack();
     }
 
@@ -95,6 +132,7 @@ public class EspressoSignUpTest extends BaseTest {
     }
 
     @Test
+
     public void userSignUpVerifyBackWorksOnEachPage(){
 
         //fill in personal info
@@ -116,6 +154,7 @@ public class EspressoSignUpTest extends BaseTest {
         tapNext();
 
         //first press of back button
+  
         pressBackOnActivity();
         onView(withText("Basketball"))
                 .check(matches(isDisplayed()));
@@ -126,17 +165,18 @@ public class EspressoSignUpTest extends BaseTest {
                 .check(matches(isDisplayed()));
 
         boolean activityFinished = false;
-        try{
+
+        try {
             pressBackOnActivity();
-        }catch (NoActivityResumedException e){
+        } catch (NoActivityResumedException e){
             activityFinished = true;
         }
         assertTrue(activityFinished);
-
     }
 
     @Test
-    public void userSignUpPersonalInfoVerifyRequiredFieldsAreRequired(){
+    public void userSignUpPersonalInfoVerifyRequiredFieldsAreRequired() {
+        // Verify required fields show errors and non-required fields do not.
 
         scrollToAndTapNext();
 
@@ -153,30 +193,44 @@ public class EspressoSignUpTest extends BaseTest {
         onView(withId(fieldId))
                 .check(matches(hasErrorText(resources.getString(errorId))));
 
+
     }
 
     //homework lesson3
 
     private static void verifyViewIsChecked (String viewName){
+
+    }
+
+
+    
         onView(withText(viewName))
                 .check(matches(isChecked()));
     }
 
-    private static void verifyViewIsNotChecked (String viewName){
+
+
+    private void verifyViewIsNotChecked(String viewName) {
+
         onView(withText(viewName))
                 .check(matches(isNotChecked()));
     }
 
-    //scroll list
+
+
+
     private static void clickViewOnTheListView(String viewName) {
         onData(hasToString(viewName))
                 .perform(click());
     }
 
-    private static void scrollToViewOnTheListView(String viewName){
+
+    private static void scrollToViewOnTheListView(String viewName) {
+
         onData(hasToString(viewName))
                 .perform(scrollTo());
     }
+
 
     @Test
     public void userChecksAstronomy(){
@@ -192,44 +246,55 @@ public class EspressoSignUpTest extends BaseTest {
         scrollToAndFill(R.id.edittext_address_zip, "94043");
 
         //scroll and press next
+
+
+   
         scrollToAndTapNext();
 
         //click Astronomy
         clickViewOnTheListView("Astronomy");
 
-        //check it is checked
+
+        // check it is checked
         verifyViewIsChecked("Astronomy");
 
-        //tap next button
+        // click next button without scrolling
         tapNext();
 
-        //press back button
+        // pressing back button
         pressBackOnActivity();
 
-        //scroll list view
         scrollToViewOnTheListView("Astronomy");
 
-        //check it is not checked
+        // check it is NOT checked
+
         verifyViewIsNotChecked("Astronomy");
 
         //click Astronomy
         clickViewOnTheListView("Astronomy");
 
-        //tap next button
+
+        // click next button without scrolling
+
         tapNext();
 
         //fill email
         scrollToAndFill(R.id.autocompletetextview_email, getProperties().getProperty("email"));
 
-        //fill password
+
+        //fill pass
+
         String password = generateRandomPassword(10);
         Log.d("info", password);
         scrollToAndFill(R.id.edittext_password, getProperties().getProperty("password"));
 
-        //click sign in button
+
+        //click sign up button
         tapNext();
 
     }
+
+
     String generateRandomPassword(int length){
         String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder res = new StringBuilder();
@@ -242,4 +307,6 @@ public class EspressoSignUpTest extends BaseTest {
         return res.toString();
     }
 
+
 }
+

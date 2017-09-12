@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Created by max on 9/11/2017.
+
  */
 
 public class BaseTest {
@@ -26,8 +26,10 @@ public class BaseTest {
     @Before
     public void baseSetUp() throws IOException {
         properties = new Properties();
+
         AssetManager testAssetManger = InstrumentationRegistry.getContext().getAssets();
         AssetManager.AssetInputStream assetStream = (AssetManager.AssetInputStream) testAssetManger.open("user.properties");
         properties.load(assetStream);
     }
+
 }
