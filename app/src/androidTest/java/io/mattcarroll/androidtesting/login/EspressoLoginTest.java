@@ -66,21 +66,32 @@ public class EspressoLoginTest extends BaseTest {
                 .perform(scrollTo(), click());
     }
 
-   // private static void tapOnFloatingActionButton() throws Exception {
-    //    onView(withId(R.id.fab_manage_accounts)).perform(click());
+    private static void tapOnFloatingActionButton() throws Exception {
+        onView(withId(R.id.fab_manage_accounts))
+                .perform(click());
+        onView(withText("HomeActivity"))
+                .check(matches(isDisplayed()));
 
-//        onView(allOf(withId(R.id.fab_manage_accounts), isDisplayed()))
-//                .perform(click());
-//
-//    }
+        //        ViewInteraction floatingActionButton = onView(
+//                allOf(withId(R.id.fab_manage_accounts), isDisplayed()));
+//        floatingActionButton.perform(click());
+    }
 
- //   private static void tapOnLinkAccountButton(){
-//        onView(withId(R.id.button_link_account))
-//                .perform(scrollTo(), click());
+    private static void tapOnLinkAccountButton() throws Exception {
+        onView(withId(R.id.button_link_account))
+                .perform(scrollTo(), click());
+        onView(withText("Android Testing"))
+                .check(matches(isDisplayed()));
 
-//        onView(allOf(withId(R.id.button_link_account), withText("Link Account"), isDisplayed()))
-//                .perform(click());
- //   }
+        //        ViewInteraction appCompatButton5 = onView(
+//                allOf(withId(R.id.button_link_account), withText("Link Account"), isDisplayed()));
+//        appCompatButton5.perform(click());
+    }
+
+    private static void createBankingAccount(int properId, String properValue){
+        onView(withId(properId))
+                .perform(typeText(properValue));
+    }
 
     @Test
 
@@ -88,17 +99,12 @@ public class EspressoLoginTest extends BaseTest {
         scrollToAndFillLoginScreen(R.id.edittext_email, getProperties().getProperty("email"));
         scrollToAndFillLoginScreen(R.id.edittext_password, getProperties().getProperty("password"));
         tapOnSignINButton();
-//        tapOnFloatingActionButton();
-//        tapOnLinkAccountButton();
-
-        ViewInteraction floatingActionButton = onView(
-                allOf(withId(R.id.fab_manage_accounts), isDisplayed()));
-        floatingActionButton.perform(click());
-
-        ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.button_link_account), withText("Link Account"), isDisplayed()));
-        appCompatButton5.perform(click());
-
+        tapOnFloatingActionButton();
+        tapOnLinkAccountButton();
+        createBankingAccount(R.id.edittext_bank_name, getProperties().getProperty("bank"));
+        createBankingAccount(R.id.edittext_account_number, getProperties().getProperty("account"));
+        createBankingAccount(R.id.edittext_password, getProperties().getProperty("passcode"));
+        tapOnLinkAccountButton();
     }
 
 }
