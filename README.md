@@ -136,6 +136,14 @@ Note that there should be exactly one call of `onFinishWork` for each `onStartWo
 * @After (tear down) method in EspressoSignUpTest unregisters the idling resource once test case
  finished running (see also warning above)
 
+## 3. Custom IdlingResource
+Implement custom IdlingResource that is similar to CountingIdlingResource, but allows calling
+ onFinishWork multiple times by utilizing unique work tags. The idea is to add unique tag for a work
+ into a set. So the resource is idle when the set is empty.
+Custom IdlingResource implementation should be thread-safe because its methods will be called from
+ different threads sooner or later.
+Also it is recommended to implement isIdleNow as close as possible to one simple boolean check.
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.

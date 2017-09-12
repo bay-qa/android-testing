@@ -87,9 +87,10 @@ public class CollectInterestsFragment extends Fragment {
         // Notify activity that background work started/finished
         FragmentActivity activity = getActivity();
         final ListensForBackgroundWork workListener;
+        final String workTag = this.getClass().getCanonicalName();
         if (activity instanceof ListensForBackgroundWork) {
             workListener = (ListensForBackgroundWork)activity;
-            workListener.onStartWork();
+            workListener.onStartWork(workTag);
         } else {
             workListener = null;
         }
@@ -111,7 +112,8 @@ public class CollectInterestsFragment extends Fragment {
                 } else if (i == interestsToAdd.length) {
                     timer.cancel();
                     if (workListener != null) {
-                        workListener.onFinishWork();
+                        workListener.onFinishWork(workTag);
+                        workListener.onFinishWork(workTag); // will not fail
                     }
                 }
             };

@@ -2,14 +2,12 @@ package io.mattcarroll.androidtesting;
 
 public interface ListensForBackgroundWork {
     /**
-     * Called to indicate that work undetectable by Espresso is started.
-     * {@link #onFinishWork()} must be called once the work is finished.
+     * Called to indicate that work undetectable by Espresso is started
      */
-    void onStartWork();
+    void onStartWork(String uniqueTag);
 
     /**
-     * Called to indicate that work undetectable by Espresso is finish.
-     * Must be called exactly once for each {@link #onStartWork()} call
+     * Called to indicate that work undetectable by Espresso is finish
      */
-    void onFinishWork();
+    void onFinishWork(String uniqueTag);
 }

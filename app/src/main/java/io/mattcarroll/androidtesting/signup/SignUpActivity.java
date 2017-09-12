@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.test.espresso.IdlingResource;
-import android.support.test.espresso.idling.CountingIdlingResource;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -16,6 +15,7 @@ import android.view.MenuItem;
 import io.mattcarroll.androidtesting.Bus;
 import io.mattcarroll.androidtesting.ListensForBackgroundWork;
 import io.mattcarroll.androidtesting.R;
+import io.mattcarroll.androidtesting.WorkIdlingResource;
 import io.mattcarroll.androidtesting.usersession.UserSession;
 
 public class SignUpActivity extends AppCompatActivity implements ListensForBackgroundWork {
@@ -27,7 +27,7 @@ public class SignUpActivity extends AppCompatActivity implements ListensForBackg
     private SignUpForm signUpForm;
 
     // The Idling Resource which will be null in production.
-    @Nullable private CountingIdlingResource idlingResource;
+    @Nullable private WorkIdlingResource idlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,26 +168,25 @@ public class SignUpActivity extends AppCompatActivity implements ListensForBackg
     @NonNull
     synchronized IdlingResource getIdlingResource() {
         if (idlingResource == null) {
-            idlingResource = new CountingIdlingResource(
-                    "SignUpActivity@" + System.identityHashCode(this), // each instance of IdlingResource should have unique name
-                    true);  // will output counter changes to logcat as I/CountingIdlingResource lines
+            idlingResource = new WorkIdlingResource(
+                    "SignUpActivity@" + System.identityHashCode(this)); // each instance of IdlingResource should have unique name
         }
         return idlingResource;
     }
 
     // Synchronized to make sure idlingResource has consistent value across different threads
     @Override
-    public synchronized void onStartWork() {
+    public synchronized void onStartWork(String uniqueTag) {
         if (idlingResource != null) {
-            idlingResource.increment();
+            idlingResource.onStartWork(uniqueTag);
         }
     }
 
     // Synchronized to make sure idlingResource has consistent value across different threads
     @Override
-    public synchronized void onFinishWork() {
+    public synchronized void onFinishWork(String uniqueTag) {
         if (idlingResource != null) {
-            idlingResource.decrement();
+            idlingResource.onFinishWork(uniqueTag);
         }
     }
 }
