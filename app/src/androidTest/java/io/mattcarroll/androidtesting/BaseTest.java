@@ -9,8 +9,8 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.Properties;
 
-public class BaseTest {
 
+public class BaseTest {
     private Properties properties;
 
     public Properties getProperties() {

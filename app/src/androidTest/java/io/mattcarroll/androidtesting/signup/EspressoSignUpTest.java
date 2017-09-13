@@ -8,16 +8,24 @@ import android.support.test.espresso.action.EspressoKey;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
+
+import android.support.test.runner.AndroidJUnit4;
+
 import android.util.Log;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+
+import java.util.Properties;
+
 import java.util.Random;
 
 import io.mattcarroll.androidtesting.BaseTest;
 import io.mattcarroll.androidtesting.R;
+
 import io.mattcarroll.androidtesting.signup.SignUpActivity;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
@@ -30,18 +38,30 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
+
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
+
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.view.KeyEvent.KEYCODE_MINUS;
 import static junit.framework.Assert.assertTrue;
+
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 
 public class EspressoSignUpTest extends BaseTest {
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.Matchers.is;
+
+@RunWith(AndroidJUnit4.class)
+public class EspressoSignUpTest extends BaseTest {
     @Rule
     public final ActivityTestRule<SignUpActivity> activityRule =
             new ActivityTestRule<>(SignUpActivity.class, false, true);
@@ -49,7 +69,9 @@ public class EspressoSignUpTest extends BaseTest {
     private Resources resources;
 
     @Before
-    public void setUp() {
+    public void setup() {
+        // getTargetContext() operates on the application under test
+        // getContext() operates on the test APK context
         resources = InstrumentationRegistry.getTargetContext().getResources();
     }
 
@@ -68,6 +90,7 @@ public class EspressoSignUpTest extends BaseTest {
 
     public static void pressBackOnActivity() {
         // hide key board
+
         closeSoftKeyboard();
         // press back button
         pressBack();
@@ -110,6 +133,7 @@ public class EspressoSignUpTest extends BaseTest {
     }
 
     private static void scrollToAndFill(int fieldId, String textToType) {
+
         EspressoKey underscore = new EspressoKey.Builder()
                 .withShiftPressed(true)
                 .withKeyCode(KEYCODE_MINUS)
@@ -150,6 +174,7 @@ public class EspressoSignUpTest extends BaseTest {
             activityFinish = true;
         }
         assertTrue(activityFinish);
+
     }
 
     @Test
@@ -199,3 +224,4 @@ public class EspressoSignUpTest extends BaseTest {
         return res.toString();
     }
 }
+

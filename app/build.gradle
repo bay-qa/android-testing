@@ -11,9 +11,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-//        lintOptions {
-//            abortOnError false
-//        }
 
     }
 
@@ -68,6 +65,7 @@ dependencies {
     // AndroidJUnitRunner and JUnit Rules
     androidTestCompile 'com.android.support.test:runner:1.0.0'
     androidTestCompile 'com.android.support.test:rules:1.0.0'
+
     // Espresso dependencies
     androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.0'
     androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.0'
