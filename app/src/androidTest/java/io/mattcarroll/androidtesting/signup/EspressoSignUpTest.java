@@ -1,4 +1,4 @@
-package io.mattcarroll.androidtesting;
+package io.mattcarroll.androidtesting.signup;
 
 
 import android.content.res.Resources;
@@ -6,12 +6,18 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.NoActivityResumedException;
 import android.support.test.espresso.action.EspressoKey;
 import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
+import android.util.Log;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Random;
+
+import io.mattcarroll.androidtesting.BaseTest;
+import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.signup.SignUpActivity;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
@@ -34,7 +40,7 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 
-public class EspressoSignUpTest {
+public class EspressoSignUpTest extends BaseTest {
 
     @Rule
     public final ActivityTestRule<SignUpActivity> activityRule =
@@ -48,7 +54,7 @@ public class EspressoSignUpTest {
     }
 
     private static void scrollToAndTapNext() {
-        onView(withId(R.id.button_next)).perform(scrollTo(), click());
+        onView(ViewMatchers.withId(R.id.button_next)).perform(scrollTo(), click());
     }
 
     private static void tapNext() {
@@ -172,10 +178,24 @@ public class EspressoSignUpTest {
         selectItemByText("Astronomy");
         tapNext();
         //fill in credentials
-        fillInCredentials("a@a.com", "password");
+        String password = generateRandomPassword(10);
+        Log.d("Info", password);
+        fillInCredentials(getProperties().getProperty("email"), getProperties().getProperty("password"));
         //click sign up
         clickSignUp();
         // verify the pop up
 //        checkSuccessfulPopUp();
+    }
+
+    String generateRandomPassword(int length) {
+        String base = "ABCDEFG1234567890";
+        StringBuilder res = new StringBuilder();
+        Random rand = new Random();
+        while (length>0) {
+            int index = rand.nextInt(base.length());
+            res.append(base.charAt(index));
+            length--;
+        }
+        return res.toString();
     }
 }

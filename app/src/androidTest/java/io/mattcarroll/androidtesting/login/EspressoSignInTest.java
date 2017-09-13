@@ -1,10 +1,14 @@
-package io.mattcarroll.androidtesting;
+package io.mattcarroll.androidtesting.login;
 
 
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 
 import org.junit.Rule;
 import org.junit.Test;
+
+import io.mattcarroll.androidtesting.R;
+import io.mattcarroll.androidtesting.SplashActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -21,7 +25,7 @@ public class EspressoSignInTest {
 
     @Test
     public void userSignInVerifyNoLinkedAccounts() {
-        onView(withId(R.id.edittext_email))
+        onView(ViewMatchers.withId(R.id.edittext_email))
                 .perform(typeText("a@a.com"));
 
         onView(withId(R.id.edittext_password))
