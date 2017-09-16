@@ -1,10 +1,17 @@
 package io.mattcarroll.androidtesting.accounts;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
+import android.support.test.espresso.FailureHandler;
+import android.support.test.espresso.base.DefaultFailureHandler;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.rule.ActivityTestRule;
+import android.support.test.uiautomator.UiDevice;
+import android.util.Log;
+import android.view.View;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -13,15 +20,18 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.SplashActivity;
 import io.mattcarroll.androidtesting.overview.TransactionListItemViewModel;
 import io.mattcarroll.androidtesting.usersession.UserSession;
 
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
@@ -43,7 +53,7 @@ public class LinkAccountsTest {
     private static final String ACCOUNT_NUMBER_LAST_DIGITS = "1234";
     private static final String ACCOUNT_NAME = "Account 1";
     private static final String DISPLAY_NAME = "Acme Account 1";
-    private static final String BALANCE = "$3.50";
+    private static final String BALANCE = "$13.50";
     private static final String AMOUNT_SPENT_THIS_MONTH = "$2.00";
 
     private static final long TODAY = new Date().getTime();
@@ -63,6 +73,7 @@ public class LinkAccountsTest {
     );
     private static final BankAccount TEST_ACCOUNT =
             new BankAccount(BANK_NAME, ACCOUNT_NAME, ACCOUNT_NUMBER, TEST_TRANSACTIONS);
+    public static final String LOG_TAG = "AndroidTest";
 
     @Rule
     public final ActivityTestRule<SplashActivity> splashActivityTestRule =
@@ -73,7 +84,39 @@ public class LinkAccountsTest {
     @Before
     public void setup() {
         // AUT context
-        appContext = InstrumentationRegistry.getTargetContext();
+        appContext = getTargetContext();
+
+        Espresso.setFailureHandler(new FailureHandler() {
+            // DefaultFailureHandler constructor requires AUT context
+            private FailureHandler defaultHandler = new DefaultFailureHandler(appContext);
+            private AtomicInteger screenshotCounter = new AtomicInteger();
+
+            @Override
+            public void handle(Throwable throwable, Matcher<View> matcher) {
+                takeScreenshot();
+
+                // We still want default stacktrace
+                defaultHandler.handle(throwable, matcher);
+            }
+
+            private void takeScreenshot() {
+                // Use exteral storage directory as it will probably be writable
+                File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                        + "/screenshots");
+                if (!path.isDirectory()) {
+                    if (!path.mkdirs()) {
+                        Log.w(LOG_TAG, "Failed to create screenshot directory");
+                        return;
+                    }
+                }
+                // Use UiAutomator screenshot method
+                UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+                File file = new File(path, "shot" + screenshotCounter.incrementAndGet() + ".png");
+                device.takeScreenshot(file);
+
+                Log.e(LOG_TAG, "Took screenshot: " + file.getAbsolutePath());
+            }
+        });
 
         // Access the app objects to reset data
         // Different files are used depending on current build variant

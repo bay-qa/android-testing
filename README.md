@@ -144,6 +144,14 @@ Custom IdlingResource implementation should be thread-safe because its methods w
  different threads sooner or later.
 Also it is recommended to implement isIdleNow as close as possible to one simple boolean check.
 
+===== Day 5
+
+## 1. Custom global FailureHandler
+* Make LinksAccountsTest#whenUserLinksAccountItAppearsInOverview failing by changing BALANCE field
+* Add UiAutomator dependency for taking screenshot
+* Implement custom FailureHandler that takes screenshot and delegate printing error to
+ the default handler
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.
