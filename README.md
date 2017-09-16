@@ -152,6 +152,18 @@ Also it is recommended to implement isIdleNow as close as possible to one simple
 * Implement custom FailureHandler that takes screenshot and delegate printing error to
  the default handler
 
+## 2. Custom failure handler and custom view action to dump RecycleView descendant hierarchy
+Default exception message doesn't containt dump of the recycleview descendants. And we need the
+state of this descendants to know why .check is failing (suppose the screenshot is not enough).
+
+* Implement custom ViewAction
+ Espresso has HumanReadables#getViewHierarchyErrorMessage to dump hierarchy but it requires passing
+ view that will be root of dumped hierarchy. One way to get view in Espresso is to implement
+ a custom ViewAction.
+* Third argument of getViewHierarchyErrorMessage is the original error (without hierarchy)
+* Return a String from ViewAction via AtomicReference
+* Call default Espresso failure handler with our fixed throwable
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.

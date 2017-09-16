@@ -5,9 +5,12 @@ import android.os.Environment;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.FailureHandler;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.base.DefaultFailureHandler;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.test.espresso.util.HumanReadables;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.uiautomator.UiDevice;
 import android.util.Log;
@@ -25,6 +28,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.SplashActivity;
@@ -43,6 +47,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.any;
 
 public class LinkAccountsTest {
     private static final String VALID_EMAIL = "me@email.com";
@@ -200,6 +205,41 @@ public class LinkAccountsTest {
                                               String balance,
                                               String amountSpentThisMonth) {
         onView(withId(R.id.recyclerview_accounts))
+                .withFailureHandler(new FailureHandler() {
+                    @Override
+                    public void handle(final Throwable throwable, Matcher<View> matcher) {
+                        final AtomicReference<String> dump = new AtomicReference<>();
+                        onView(matcher) // we want the dump this RecycleView and its descendants
+                            .perform(new ViewAction() {
+                                @Override // we don't need any additional constraints
+                                public Matcher<View> getConstraints() { return any(View.class); }
+
+                                @Override
+                                public String getDescription() { return "Dump view hierarchy for an error"; }
+
+                                @Override
+                                public void perform(UiController uiController, View view) {
+                                    // call Espresso utility method
+                                    String hierarchyDump = HumanReadables.getViewHierarchyErrorMessage(
+                                            view,
+                                            null,
+                                            throwable.getMessage(),
+                                            null
+                                    );
+                                    dump.set(hierarchyDump);
+                                }
+                            });
+                        String dumpString = dump.get();
+                        Throwable fixedThrowable;
+                        if (dumpString != null) {
+                            fixedThrowable = new AssertionError(throwable.getMessage() + dumpString);
+                        } else {
+                            fixedThrowable = throwable;
+                        }
+                        new DefaultFailureHandler(InstrumentationRegistry.getTargetContext())
+                                .handle(fixedThrowable, matcher);
+                    }
+                })
                 .perform(RecyclerViewActions.scrollTo(
                         hasDescendant(withText(accountNumberLastDigits))))
                 .check(matches(allOf(
