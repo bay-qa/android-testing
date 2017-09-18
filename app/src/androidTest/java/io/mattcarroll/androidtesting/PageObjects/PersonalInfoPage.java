@@ -2,13 +2,16 @@ package io.mattcarroll.androidtesting.PageObjects;
 
 import android.support.annotation.NonNull;
 
+import io.mattcarroll.androidtesting.BaseTest;
 import io.mattcarroll.androidtesting.R;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
@@ -16,7 +19,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
  * Created by borisgurtovyy on 9/11/17.
  */
 
-public class PersonalInfoPage {
+public class PersonalInfoPage extends BaseTest {
 
      public PersonalInfoPage(){
         onView(withId(R.id.edittext_first_name))
@@ -77,16 +80,34 @@ public class PersonalInfoPage {
         return this;
     }
 
-    public InterestsPage tapOnNextButton() {
+    public void submit() {
         onView(withId(R.id.button_next))
                 .perform(
                         scrollTo(),
                         click()
-                        );
+                );
+    }
+
+    public InterestsPage submitAndExpectInteresrsPage() {
+        submit();
         return new InterestsPage();
     }
 
+    public void back() {
+        pressBack();
+    }
 
+    public PersonalInfoPage assertHasFirstNameError(@NonNull String error){
+        onView(withId(R.id.edittext_first_name))
+                .check(matches(hasErrorText(error)));
+        return this;
+    }
+
+    public PersonalInfoPage assertHasLastNameError(@NonNull String error){
+        onView(withId(R.id.edittext_last_name))
+                .check(matches(hasErrorText(error)));
+        return this;
+    }
 
 }
 
