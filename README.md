@@ -164,6 +164,9 @@ state of this descendants to know why .check is failing (suppose the screenshot 
 * Return a String from ViewAction via AtomicReference
 * Call default Espresso failure handler with our fixed throwable
 
+## -. Update Espresso to version 3.0.1
+New version is released
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.
