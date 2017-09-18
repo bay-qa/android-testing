@@ -167,6 +167,26 @@ state of this descendants to know why .check is failing (suppose the screenshot 
 ## -. Update Espresso to version 3.0.1
 New version is released
 
+## 3. Another custom ViewAction
+Requirements for ViewAction implementation:
+https://developer.android.com/reference/android/support/test/espresso/ViewAction.html
+
+Implement custom ViewAction in io.mattcarroll.androidtesting.CustomViewActions and use it in
+ EspressoSignUpTest
+* Implement new viewaction as a static method for easy importing
+* The static method should return new class instance wrapped by actionWithAssertions.
+  actionWithAssertions makes sure that global assertions (like the ones set by Espresso AccessibilityCheck
+  are executed)
+* We use unwrapped GeneralClickAction to perform the actual clicks. Arguments are from Espresso
+ source (unfortunately latest available source is for Espresso 2) and Espresso javadoc
+* getConstraints() provides constraints that Espresso checks before calling perform().
+  GeneralClickAction requires isDisplayingAtLeast(90) - 90% of target view should not be obscured
+  by any parent view.
+  And we want target view to be CheckedTextView to be able to check its state
+* getDescription() should return short description that fit in a sentence like:
+  "performing %description% action on view with id ..."
+
+
 # Android Testing
 
 This project is a fake Android app that is intended to be used in workshop training to learn Android testing practices.

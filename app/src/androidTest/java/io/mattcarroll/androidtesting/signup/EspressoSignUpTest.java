@@ -30,6 +30,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static io.mattcarroll.androidtesting.CustomViewActions.setChecked;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.core.Is.is;
 
@@ -130,7 +131,7 @@ public class EspressoSignUpTest {
     private static void selectInterest(String ... interests) {
         for (String interest : interests) {
             onData(is(interest))
-                    .perform(click());
+                    .perform(setChecked(true));
         }
     }
 
