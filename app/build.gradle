@@ -75,10 +75,6 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-web:3.0.1'
     androidTestCompile 'com.android.support.test.espresso.idling:idling-concurrent:3.0.1'
 
-    // UiAutomator dependency for taking screenshots
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
-
-
     // The following Espresso dependency can be either "compile"
     // or "androidTestCompile", depending on the app's implementation
     // androidTestCompile for now, might change later

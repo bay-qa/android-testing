@@ -186,6 +186,19 @@ Implement custom ViewAction in io.mattcarroll.androidtesting.CustomViewActions a
 * getDescription() should return short description that fit in a sentence like:
   "performing %description% action on view with id ..."
 
+## 4. Screenshooting with Espresso
+WARNING: this API is in Beta and there is no examples in the docs
+https://developer.android.com/reference/android/support/test/runner/screenshot/package-summary.html
+* Remove UiAutomator dependency
+* Comment FailureHandler in verifyAccountOverviewIsShown
+* Use BasicScreenCaptureProcessor to save screenshots and get resulting filenames
+  Screenshots are saved at Pictures/screenshots directory
+* Screenshot#capture() can be used only on API >= 18 (this particular overload uses UiAutomator).
+  Use Screenshot#capture(View) or Screenshot#capture(Activity) on API < 18
+* We don't use ScreenCapture#process() because it doesn't return resulting filename and
+  ScreenCapture#getName() returns null both before and after running BasicScreenCaptureProcessor
+* Use ScreenCapture#setName before processing it to set filename manually (but not directory)
+  This way you can just call #process() and not pass it to BasicScreenCaptureProcessor`
 
 # Android Testing
 

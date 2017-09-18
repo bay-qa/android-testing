@@ -1,18 +1,16 @@
 package io.mattcarroll.androidtesting.accounts;
 
 import android.content.Context;
-import android.os.Environment;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.FailureHandler;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.base.DefaultFailureHandler;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
-import android.support.test.espresso.util.HumanReadables;
 import android.support.test.rule.ActivityTestRule;
-import android.support.test.uiautomator.UiDevice;
+import android.support.test.runner.screenshot.BasicScreenCaptureProcessor;
+import android.support.test.runner.screenshot.ScreenCapture;
+import android.support.test.runner.screenshot.ScreenCaptureProcessor;
+import android.support.test.runner.screenshot.Screenshot;
 import android.util.Log;
 import android.view.View;
 
@@ -23,12 +21,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.SplashActivity;
@@ -47,7 +44,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.any;
 
 public class LinkAccountsTest {
     private static final String VALID_EMAIL = "me@email.com";
@@ -91,10 +87,11 @@ public class LinkAccountsTest {
         // AUT context
         appContext = getTargetContext();
 
+        Screenshot.addScreenCaptureProcessors(Collections.<ScreenCaptureProcessor>singleton(new BasicScreenCaptureProcessor()));
         Espresso.setFailureHandler(new FailureHandler() {
             // DefaultFailureHandler constructor requires AUT context
             private FailureHandler defaultHandler = new DefaultFailureHandler(appContext);
-            private AtomicInteger screenshotCounter = new AtomicInteger();
+            private ScreenCaptureProcessor processor = new BasicScreenCaptureProcessor();
 
             @Override
             public void handle(Throwable throwable, Matcher<View> matcher) {
@@ -105,21 +102,13 @@ public class LinkAccountsTest {
             }
 
             private void takeScreenshot() {
-                // Use exteral storage directory as it will probably be writable
-                File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
-                        + "/screenshots");
-                if (!path.isDirectory()) {
-                    if (!path.mkdirs()) {
-                        Log.w(LOG_TAG, "Failed to create screenshot directory");
-                        return;
-                    }
+                try {
+                    ScreenCapture screenCapture = Screenshot.capture();
+                    String file = processor.process(screenCapture);
+                    Log.e(LOG_TAG, "Took screenshot: " + file);
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "Failed to take a screenshot", e);
                 }
-                // Use UiAutomator screenshot method
-                UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-                File file = new File(path, "shot" + screenshotCounter.incrementAndGet() + ".png");
-                device.takeScreenshot(file);
-
-                Log.e(LOG_TAG, "Took screenshot: " + file.getAbsolutePath());
             }
         });
 
@@ -205,7 +194,7 @@ public class LinkAccountsTest {
                                               String balance,
                                               String amountSpentThisMonth) {
         onView(withId(R.id.recyclerview_accounts))
-                .withFailureHandler(new FailureHandler() {
+/*                .withFailureHandler(new FailureHandler() {
                     @Override
                     public void handle(final Throwable throwable, Matcher<View> matcher) {
                         final AtomicReference<String> dump = new AtomicReference<>();
@@ -239,7 +228,7 @@ public class LinkAccountsTest {
                         new DefaultFailureHandler(InstrumentationRegistry.getTargetContext())
                                 .handle(fixedThrowable, matcher);
                     }
-                })
+                })*/
                 .perform(RecyclerViewActions.scrollTo(
                         hasDescendant(withText(accountNumberLastDigits))))
                 .check(matches(allOf(
