@@ -28,11 +28,7 @@ android {
         }
     }
 }
-android {
-    lintOptions {
-        abortOnError false
-    }
-}
+
 
 // Force same version as in the app
 configurations.all {
@@ -81,4 +77,6 @@ dependencies {
     // or "androidTestCompile", depending on the app's implementation
     // androidTestCompile for now, might change later
     androidTestCompile 'com.android.support.test.espresso:espresso-idling-resource:3.0.0'
+
 }
+
