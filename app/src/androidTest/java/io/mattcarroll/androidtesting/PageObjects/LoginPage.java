@@ -12,6 +12,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
@@ -46,6 +47,11 @@ public class LoginPage extends BaseTest{
     public HomeActivityPage signinAndExpectHomeActivityPage() {
         signin();
         return new HomeActivityPage();
+    }
+    public LoginPage assertHasEmailError(@NonNull String error){
+        onView(withId(R.id.edittext_email))
+                .check(matches(hasErrorText(error)));
+        return this;
     }
 
 

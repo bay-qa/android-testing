@@ -12,6 +12,8 @@ import org.junit.Test;
 
 import io.mattcarroll.androidtesting.BaseTest;
 import io.mattcarroll.androidtesting.PageObjects.LoginPage;
+import io.mattcarroll.androidtesting.PageObjects.PersonalInfoPage;
+import io.mattcarroll.androidtesting.R;
 import io.mattcarroll.androidtesting.SplashActivity;
 import io.mattcarroll.androidtesting.signup.SignUpActivity;
 import io.mattcarroll.androidtesting.usersession.UserSession;
@@ -39,5 +41,16 @@ public class PageObjectLoginTest extends BaseTest{
                 .email(getProperties().getProperty("email_login"))
                 .password(getProperties().getProperty("password_login"))
                 .signinAndExpectHomeActivityPage();
+    }
+
+    @Test
+    public void userSignInInfoVerifyRequiredFieldsAreRequiredPO() {
+        final String REQUIRED_FIELD_ERROR = resources.getString(R.string.error_field_required);
+
+        LoginPage loginPage = new LoginPage();
+
+        loginPage.signin();
+
+        loginPage.assertHasEmailError(REQUIRED_FIELD_ERROR);
     }
 }
