@@ -34,7 +34,7 @@ public class EspressoLoginTest {
             new ActivityTestRule<>(SplashActivity.class, false, true);
 
     @Test
-    public void userLogsInsuccessfully() {
+    public void userLogsInSuccessfully() {
         onView(withId(R.id.edittext_email))
                 .perform(typeText("borisbayqa@gmail.com"));
         onView(withId(R.id.edittext_password))
@@ -42,7 +42,7 @@ public class EspressoLoginTest {
         onView(withId(R.id.button_sign_in))
                 .perform(scrollTo())
                 .perform(click());
-        onView(withId(R.id.textview_no_accounts))
+        onView(withId(R.id.fab_manage_accounts))
                 .check(matches(isDisplayed()));
     }
 }
