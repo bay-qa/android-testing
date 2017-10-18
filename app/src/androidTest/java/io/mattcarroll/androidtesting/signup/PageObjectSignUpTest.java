@@ -59,7 +59,11 @@ public class PageObjectSignUpTest extends BaseTest{
         personalInfoPage.submit();
 
         personalInfoPage.assertHasFirstNameError(REQUIRED_FIELD_ERROR)
-                        .assertHasLastNameError(REQUIRED_FIELD_ERROR);
+                        .assertHasLastNameError(REQUIRED_FIELD_ERROR)
+                        .assertHasAdress1Error(REQUIRED_FIELD_ERROR)
+                        .assertHasCityError(REQUIRED_FIELD_ERROR)
+                        .assertHasStateError(REQUIRED_FIELD_ERROR)
+                        .assertHasZipError(REQUIRED_FIELD_ERROR);
 
     }
 

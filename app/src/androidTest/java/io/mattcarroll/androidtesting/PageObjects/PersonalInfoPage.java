@@ -108,6 +108,26 @@ public class PersonalInfoPage extends BaseTest {
                 .check(matches(hasErrorText(error)));
         return this;
     }
+    public PersonalInfoPage assertHasAdress1Error(@NonNull String error){
+        onView(withId(R.id.edittext_address_line_1))
+                .check(matches(hasErrorText(error)));
+        return this;
+    }
+    public PersonalInfoPage assertHasCityError(@NonNull String error){
+        onView(withId(R.id.edittext_address_city))
+                .check(matches(hasErrorText(error)));
+        return this;
+    }
+    public PersonalInfoPage assertHasStateError(@NonNull String error){
+        onView(withId(R.id.edittext_address_state))
+                .check(matches(hasErrorText(error)));
+        return this;
+    }
+    public PersonalInfoPage assertHasZipError(@NonNull String error){
+        onView(withId(R.id.edittext_address_zip))
+                .check(matches(hasErrorText(error)));
+        return this;
+    }
 
 }
 
