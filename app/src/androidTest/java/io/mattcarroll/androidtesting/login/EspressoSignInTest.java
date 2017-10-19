@@ -1,6 +1,8 @@
 package io.mattcarroll.androidtesting.login;
 
 
+import android.content.res.Resources;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 
 import org.junit.Before;
@@ -16,8 +18,10 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withResourceName;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 public class EspressoSignInTest extends BaseTest{
@@ -25,29 +29,24 @@ public class EspressoSignInTest extends BaseTest{
     @Rule
     public final ActivityTestRule<SplashActivity> activityRule=
             new ActivityTestRule<>(SplashActivity.class, false, true);
+    private Resources resources;
 
-    @Test
-    public void userSignInPersonalInfoRequiredFieldsAreRequired(){
-
-        onView(withId(R.id.edittext_email))
-                .perform(typeText("email"));
-        onView(withId(R.id.edittext_password))
-                .perform(typeText("passwordForLogin"));
-        onView(withId(R.id.button_sign_in))
-                .perform(
-                        scrollTo(),
-                        click()
-                );
-        onView(withId(R.id.textview_no_accounts))
-                .check(matches(isDisplayed()));
-    }
-
-    //homework lesson 4
+       @Before
+    public void setup() {
+           // getTargetContext() operates on the application under test
+           // getContext() operates on the test APK context
+           resources = InstrumentationRegistry.getTargetContext().getResources();
+       }
 
     private static void fillFields(int fieldId, String textToType){
         onView(withId(fieldId)).perform(
                 typeText(textToType)
         );
+    }
+
+    private void checkFieldHasError(int fieldId, int errorID){
+        onView(withId(fieldId))
+                .check(matches(hasErrorText(resources.getString(errorID))));
     }
 
     private static void scrollToButton(int fieldId){
@@ -59,11 +58,8 @@ public class EspressoSignInTest extends BaseTest{
         onView(withId(fieldId)).perform(click());
     }
 
-    private static void checkTextIsDisplayed(String textToCheck){
-        onView(withText(textToCheck)).check(matches(isDisplayed()));
-    }
 
-    @Before
+    //@Before
     public void SignIn(){
         //fill email
         fillFields(R.id.edittext_email, getProperties().getProperty("email"));
@@ -81,6 +77,7 @@ public class EspressoSignInTest extends BaseTest{
     @Test
     public void logInAndBankAccount(){
 
+        SignIn();
         //click on + button
         clickButton(R.id.fab_manage_accounts);
 
@@ -98,6 +95,15 @@ public class EspressoSignInTest extends BaseTest{
 
         //click link button
         clickButton(R.id.button_link_account);
+
+    }
+    @Test
+    public void userSignInPersonalInfoRequiredFieldsAreRequired(){
+
+        scrollToButton(R.id.button_sign_in);
+        clickButton(R.id.button_sign_in);
+        checkFieldHasError(R.id.edittext_email, R.string.error_field_required);
+
 
     }
 }
